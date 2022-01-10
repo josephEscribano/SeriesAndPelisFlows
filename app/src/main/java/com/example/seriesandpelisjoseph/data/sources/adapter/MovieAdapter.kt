@@ -1,5 +1,6 @@
 package com.example.seriesandpelisjoseph.data.sources.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.loadAny
 import com.example.seriesandpelisjoseph.R
 
 import com.example.seriesandpelisjoseph.databinding.RecyclerstylepelisBinding
@@ -28,9 +30,11 @@ class MovieAdapter():ListAdapter<Movie,MovieAdapter.ItemViewHolder>(DiffCallBack
 
     class ItemViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
         private val binding = RecyclerstylepelisBinding.bind(itemView)
+
+        @SuppressLint("UseCompatLoadingForDrawables")
         fun bind(movie: Movie) {
             with(binding){
-                image.load(binding.root.context.getString(R.string.pathImage) + movie.imagen)
+                image.loadAny( movie.imagen?.let { binding.root.context.getString(R.string.pathImage) + movie.imagen } ?: run { binding.root.context.getDrawable(R.drawable.img) } )
                 titulo.setText(movie.titulo)
             }
         }

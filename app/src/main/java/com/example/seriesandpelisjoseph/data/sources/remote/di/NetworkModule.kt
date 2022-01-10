@@ -1,8 +1,9 @@
 package com.example.seriesandpelisjoseph.data.sources.remote.di
 
-import com.example.seriesandpelisjoseph.data.sources.remote.PelisService
+import com.example.seriesandpelisjoseph.data.sources.remote.MultiMediaService
 import com.example.seriesandpelisjoseph.data.sources.remote.ServiceInterceptor
 import com.example.seriesandpelisjoseph.utils.Constantes.BASE_URL
+import com.google.gson.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,6 +11,8 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.reflect.Type
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -37,7 +40,6 @@ object NetworkModule {
     @Provides
     fun provideConverterFactory(): GsonConverterFactory =
         GsonConverterFactory.create()
-
 //    fun provideConverterFactory(): Gson? = GsonBuilder().registerTypeAdapter(
 //        LocalDate::class.java,
 //        JsonDeserializer<LocalDate> { jsonElement: JsonElement, type: Type?, jsonDeserializationContext: JsonDeserializationContext? ->
@@ -68,6 +70,6 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun seriesService(retrofit: Retrofit): PelisService =
-        retrofit.create(PelisService::class.java)
+    fun seriesService(retrofit: Retrofit): MultiMediaService =
+        retrofit.create(MultiMediaService::class.java)
 }

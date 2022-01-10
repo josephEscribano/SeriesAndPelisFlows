@@ -1,13 +1,13 @@
-package com.example.seriesandpelisjoseph.data.modeloPeliculas
+package com.example.seriesandpelisjoseph.data.pojos.multSearch
 
 
 import com.google.gson.annotations.SerializedName
 
-data class MoviePojo(
+data class MultiMediaPojo(
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
-    val resultPojos: List<ResultPojo>,
+    val resultMediaPojos: List<ResultMediaPojo>,
     @SerializedName("total_pages")
     val totalPages: Int,
     @SerializedName("total_results")
