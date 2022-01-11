@@ -3,7 +3,7 @@ package com.example.seriesandpelisjoseph.data.pojos.modeloSeries
 
 import com.google.gson.annotations.SerializedName
 
-data class SeriesPojo(
+data class SeriePojo(
     @SerializedName("backdrop_path")
     val backdropPath: String,
     @SerializedName("created_by")

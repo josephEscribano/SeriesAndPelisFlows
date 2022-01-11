@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.seriesandpelisjoseph.data.model.toMovie
+import com.example.seriesandpelisjoseph.R
+import com.example.seriesandpelisjoseph.data.model.toActorMultimedia
+import com.example.seriesandpelisjoseph.data.model.toMovieMultimedia
+import com.example.seriesandpelisjoseph.data.model.toSerieMultimedia
 import com.example.seriesandpelisjoseph.data.repositories.MovieRepository
-import com.example.seriesandpelisjoseph.domain.Movie
+import com.example.seriesandpelisjoseph.domain.MultiMedia
+import com.example.seriesandpelisjoseph.utils.Constantes
 import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -15,13 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val movieRepository: MovieRepository): ViewModel(){
 
-    private val listaMovie = mutableListOf<Movie>()
+    private val listaMovie = mutableListOf<MultiMedia>()
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
-    private val _movies = MutableLiveData<List<Movie>>()
-    val movie: LiveData<List<Movie>> get() = _movies
+    private val _multimedia = MutableLiveData<List<MultiMedia>>()
+    val multiMedia: LiveData<List<MultiMedia>> get() = _multimedia
+
 
     private val _loading = MutableLiveData<Boolean>()
     val loading : LiveData<Boolean> get() = _loading
@@ -35,11 +40,11 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
 
 
             when(result){
-                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultPojo -> listaMovie.add(resultPojo.toMovie()) }}
+                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultPojo -> listaMovie.add(resultPojo.toMovieMultimedia()) }}
                 is NetworkResult.Error -> _error.value = result.message ?: "Error"
             }
             if (result is NetworkResult.Succcess)
-                _movies.value = listaMovie.toList()
+                _multimedia.value = listaMovie.toList()
 
         }
 
@@ -52,11 +57,11 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
                 if (listaMovie.isNotEmpty())
                     listaMovie.clear()
             when(result){
-                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultMediaPojo -> listaMovie.add(resultMediaPojo.toMovie())} }
+                is NetworkResult.Succcess -> result.data?.let { it.resultPopularMoviePojos.map { resultPopularSerie  -> listaMovie.add(resultPopularSerie.toMovieMultimedia())} }
                 is NetworkResult.Error -> _error.value = result.message ?: "Error"
             }
             if (result is NetworkResult.Succcess)
-                _movies.value = listaMovie.toList()
+                _multimedia.value = listaMovie.toList()
         }
     }
 
@@ -67,25 +72,33 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
                 if (listaMovie.isNotEmpty())
                     listaMovie.clear()
             when(result){
-                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultMediaPojo -> listaMovie.add(resultMediaPojo.toMovie())} }
+                is NetworkResult.Succcess -> result.data?.let { it.resultPopularSeriePojos.map { resultMediaPojo -> listaMovie.add(resultMediaPojo.toSerieMultimedia())} }
                 is NetworkResult.Error -> _error.value = result.message ?: "Error"
             }
             if (result is NetworkResult.Succcess)
-                _movies.value = listaMovie.toList()
+                _multimedia.value = listaMovie.toList()
         }
     }
     fun getMultiSearch(titulo: String){
         viewModelScope.launch {
-            val result = movieRepository.getAll(titulo)
+            val result = movieRepository.getAll(titulo,R.string.all.toString())
             if (result is NetworkResult.Succcess)
                 if (listaMovie.isNotEmpty())
                     listaMovie.clear()
 
             when(result){
-                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultMediaPojo -> _movies.value = listaMovie.filter { movie ->  movie.titulo.startsWith(titulo) }.toList() } }
+                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultMediaPojo ->
+                if(resultMediaPojo.mediaType.equals(Constantes.MOVIE))
+                    listaMovie.add(resultMediaPojo.toMovieMultimedia())
+                else if (resultMediaPojo.mediaType.equals(Constantes.TV))
+                    listaMovie.add(resultMediaPojo.toSerieMultimedia())
+                else
+                    listaMovie.add(resultMediaPojo.toActorMultimedia())
+                } }
                 is NetworkResult.Error -> _error.value = result.message ?: "Error"
             }
 
+            _multimedia.value = listaMovie.toList()
         }
     }
 }

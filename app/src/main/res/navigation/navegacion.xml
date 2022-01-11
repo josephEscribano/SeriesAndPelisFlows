@@ -10,4 +10,9 @@
         android:label="fragment_buscar_pelis"
         tools:context=".framework.main.FragmentBuscarPelis"
         tools:layout="@layout/fragment_buscar_pelis" />
+    <fragment
+        android:id="@+id/fragmentMostrarPelis"
+        android:name="com.example.seriesandpelisjoseph.fragmentMostrarPelis"
+        android:label="fragment_mostrar_pelis"
+        tools:layout="@layout/fragment_mostrar_pelis" />
 </navigation>

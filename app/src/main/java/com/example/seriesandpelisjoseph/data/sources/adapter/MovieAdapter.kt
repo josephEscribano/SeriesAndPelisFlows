@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
 import coil.loadAny
 import com.example.seriesandpelisjoseph.R
 
 import com.example.seriesandpelisjoseph.databinding.RecyclerstylepelisBinding
-import com.example.seriesandpelisjoseph.domain.Movie
+import com.example.seriesandpelisjoseph.domain.MultiMedia
 
-class MovieAdapter():ListAdapter<Movie,MovieAdapter.ItemViewHolder>(DiffCallBack()) {
+class MovieAdapter():ListAdapter<MultiMedia,MovieAdapter.ItemViewHolder>(DiffCallBack()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -32,21 +31,21 @@ class MovieAdapter():ListAdapter<Movie,MovieAdapter.ItemViewHolder>(DiffCallBack
         private val binding = RecyclerstylepelisBinding.bind(itemView)
 
         @SuppressLint("UseCompatLoadingForDrawables")
-        fun bind(movie: Movie) {
+        fun bind(multiMedia: MultiMedia) {
             with(binding){
-                image.loadAny( movie.imagen?.let { binding.root.context.getString(R.string.pathImage) + movie.imagen } ?: run { binding.root.context.getDrawable(R.drawable.img) } )
-                titulo.setText(movie.titulo)
+                image.loadAny( multiMedia.imagen?.let { binding.root.context.getString(R.string.pathImage) + multiMedia.imagen } ?: run { binding.root.context.getDrawable(R.drawable.img) } )
+                titulo.setText(multiMedia.titulo)
             }
         }
     }
 }
 
-class DiffCallBack : DiffUtil.ItemCallback<Movie>(){
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+class DiffCallBack : DiffUtil.ItemCallback<MultiMedia>(){
+    override fun areItemsTheSame(oldItem: MultiMedia, newItem: MultiMedia): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    override fun areContentsTheSame(oldItem: MultiMedia, newItem: MultiMedia): Boolean {
         return oldItem == newItem
     }
 
