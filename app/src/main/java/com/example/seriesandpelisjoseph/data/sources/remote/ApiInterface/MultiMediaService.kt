@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.data.sources.remote
+package com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface
 
 import com.example.seriesandpelisjoseph.data.pojos.multSearch.MultiMediaPojo
 import com.example.seriesandpelisjoseph.data.pojos.popularMovie.PopularMoviePojo

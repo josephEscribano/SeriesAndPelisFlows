@@ -9,10 +9,34 @@
         android:name="com.example.seriesandpelisjoseph.framework.main.FragmentBuscarPelis"
         android:label="fragment_buscar_pelis"
         tools:context=".framework.main.FragmentBuscarPelis"
-        tools:layout="@layout/fragment_buscar_pelis" />
+        tools:layout="@layout/fragment_buscar_pelis" >
+        <action
+            android:id="@+id/action_fragmentBuscarPelis_to_fragmentMostrarPelis"
+            app:destination="@id/fragmentMostrarPelis" />
+        <action
+            android:id="@+id/action_fragmentBuscarPelis_to_fragmentMostrarSeries"
+            app:destination="@id/fragmentMostrarSeries" />
+    </fragment>
     <fragment
         android:id="@+id/fragmentMostrarPelis"
-        android:name="com.example.seriesandpelisjoseph.fragmentMostrarPelis"
-        android:label="fragment_mostrar_pelis"
-        tools:layout="@layout/fragment_mostrar_pelis" />
+        android:name="com.example.seriesandpelisjoseph.framework.main.FragmentMostrarPelis"
+        android:label="fragment_mostrar_pelis" >
+        <argument
+            android:name="multimedia"
+            app:argType="com.example.seriesandpelisjoseph.domain.MultiMedia" />
+        <action
+            android:id="@+id/action_fragmentMostrarPelis_to_fragmentBuscarPelis"
+            app:destination="@id/fragmentBuscarPelis" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMostrarSeries"
+        android:name="com.example.seriesandpelisjoseph.framework.main.FragmentMostrarSeries"
+        android:label="fragment_mostrar_series"
+        tools:layout="@layout/fragment_mostrar_series">
+        <argument
+            android:name="serie"
+            android:defaultValue="@null"
+            app:argType="com.example.seriesandpelisjoseph.domain.Serie"
+            app:nullable="true" />
+    </fragment>
 </navigation>

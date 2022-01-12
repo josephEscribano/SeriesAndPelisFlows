@@ -16,4 +16,6 @@ class MovieRepository @Inject constructor(private val remoteDataSource: RemoteDa
     suspend fun getPopularMovies() = withContext(Dispatchers.IO){remoteDataSource.getPopularMovies() }
 
     suspend fun getPopularSeries() = withContext(Dispatchers.IO){remoteDataSource.getPopularSeries()}
+
+    suspend fun getSerie(tvId:Int) = withContext(Dispatchers.IO){remoteDataSource.getSerie(tvId)}
 }

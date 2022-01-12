@@ -1,6 +1,7 @@
 package com.example.seriesandpelisjoseph.data.sources.remote.di
 
-import com.example.seriesandpelisjoseph.data.sources.remote.MultiMediaService
+import com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface.MultiMediaService
+import com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface.SerieService
 import com.example.seriesandpelisjoseph.data.sources.remote.ServiceInterceptor
 import com.example.seriesandpelisjoseph.utils.Constantes.BASE_URL
 import com.google.gson.*
@@ -15,6 +16,18 @@ import java.lang.reflect.Type
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import com.google.gson.JsonPrimitive
+
+import com.google.gson.JsonSerializer
+
+import com.google.gson.JsonDeserializer
+
+import com.google.gson.GsonBuilder
+
+import com.google.gson.Gson
+
+
+
 
 
 @Module
@@ -38,38 +51,42 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideConverterFactory(): GsonConverterFactory =
-        GsonConverterFactory.create()
-//    fun provideConverterFactory(): Gson? = GsonBuilder().registerTypeAdapter(
-//        LocalDate::class.java,
-//        JsonDeserializer<LocalDate> { jsonElement: JsonElement, type: Type?, jsonDeserializationContext: JsonDeserializationContext? ->
-//            LocalDate.parse(
-//                jsonElement.asJsonPrimitive.asString
-//            )
-//        } as JsonDeserializer<LocalDate>?)
-//        .registerTypeAdapter(
-//            LocalDate::class.java,
-//            JsonSerializer<LocalDate> { localDate: LocalDate, type: Type?, jsonSerializationContext: JsonSerializationContext? ->
-//                JsonPrimitive(
-//                    localDate.toString()
-//                )
-//            } as JsonSerializer<LocalDate>?).create()
-
+//    fun provideConverterFactory(): GsonConverterFactory =
+//        GsonConverterFactory.create()
+    fun getGson(): Gson {
+        return GsonBuilder().registerTypeAdapter(
+            LocalDate::class.java,
+            JsonDeserializer { jsonElement: JsonElement, type: Type?, jsonDeserializationContext: JsonDeserializationContext? ->
+                LocalDate.parse(
+                    jsonElement.asJsonPrimitive.asString
+                )
+            } as JsonDeserializer<LocalDate>)
+            .registerTypeAdapter(
+                LocalDate::class.java,
+                JsonSerializer { localDate: LocalDate, type: Type?, jsonSerializationContext: JsonSerializationContext? ->
+                    JsonPrimitive(
+                        localDate.toString()
+                    )
+                } as JsonSerializer<LocalDate>).create()
+    }
     @Singleton
     @Provides
     fun provideRetrofit(
-        okHttpClient: OkHttpClient,
-        gsonConverterFactory: GsonConverterFactory
+        okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
-            .addConverterFactory(gsonConverterFactory)
+            .addConverterFactory(GsonConverterFactory.create(getGson()))
             .build()
     }
 
     @Singleton
     @Provides
-    fun seriesService(retrofit: Retrofit): MultiMediaService =
+    fun multimediaService(retrofit: Retrofit): MultiMediaService =
         retrofit.create(MultiMediaService::class.java)
+
+    @Singleton
+    @Provides
+    fun serieService(retrofit: Retrofit): SerieService = retrofit.create(SerieService::class.java)
 }

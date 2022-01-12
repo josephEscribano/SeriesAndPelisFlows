@@ -7,9 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.data.model.toActorMultimedia
 import com.example.seriesandpelisjoseph.data.model.toMovieMultimedia
+import com.example.seriesandpelisjoseph.data.model.toSerie
 import com.example.seriesandpelisjoseph.data.model.toSerieMultimedia
 import com.example.seriesandpelisjoseph.data.repositories.MovieRepository
+import com.example.seriesandpelisjoseph.domain.Movie
 import com.example.seriesandpelisjoseph.domain.MultiMedia
+import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,11 +30,10 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
     private val _multimedia = MutableLiveData<List<MultiMedia>>()
     val multiMedia: LiveData<List<MultiMedia>> get() = _multimedia
 
+    private val _SerieData = MutableLiveData<Serie>()
+    val SerieData : LiveData<Serie> get() = _SerieData
 
-    private val _loading = MutableLiveData<Boolean>()
-    val loading : LiveData<Boolean> get() = _loading
-
-    fun getMovie(titulo:String){
+    fun getMovie(titulo:String) {
         viewModelScope.launch {
             val result = movieRepository.getMovie(titulo,1)
             if (result is NetworkResult.Succcess)
@@ -40,7 +42,7 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
 
 
             when(result){
-                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultPojo -> listaMovie.add(resultPojo.toMovieMultimedia()) }}
+                is NetworkResult.Succcess -> result.data?.let { it.resultMultimediaPojos.map { resultPojo -> listaMovie.add(resultPojo.toMovieMultimedia()) }}
                 is NetworkResult.Error -> _error.value = result.message ?: "Error"
             }
             if (result is NetworkResult.Succcess)
@@ -48,7 +50,18 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
 
         }
 
+    }
 
+    fun getSerie(tvId:Int) {
+        viewModelScope.launch {
+            val result = movieRepository.getSerie(tvId)
+
+            when(result){
+                is NetworkResult.Error -> _error.value = result.message ?: "Error"
+                is NetworkResult.Succcess -> result.data?.let { _SerieData.value = it.toSerie() }
+            }
+
+        }
     }
     fun getPopularMovies(){
         viewModelScope.launch {
@@ -87,7 +100,7 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
                     listaMovie.clear()
 
             when(result){
-                is NetworkResult.Succcess -> result.data?.let { it.resultMediaPojos.map { resultMediaPojo ->
+                is NetworkResult.Succcess -> result.data?.let { it.resultMultimediaPojos.map { resultMediaPojo ->
                 if(resultMediaPojo.mediaType.equals(Constantes.MOVIE))
                     listaMovie.add(resultMediaPojo.toMovieMultimedia())
                 else if (resultMediaPojo.mediaType.equals(Constantes.TV))

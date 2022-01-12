@@ -10,24 +10,24 @@
     tools:context=".framework.main.MainActivity"
     tools:openDrawer="start">
 
-<!--    <androidx.coordinatorlayout.widget.CoordinatorLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content">-->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-<!--        <com.google.android.material.appbar.AppBarLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:liftOnScroll="true">-->
-<!--            <com.google.android.material.appbar.MaterialToolbar-->
-<!--                android:id="@+id/mainBar"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="?attr/actionBarSize"-->
-<!--                style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"-->
-<!--                app:menu="@menu/menu_principal"-->
-<!--                />-->
-<!--        </com.google.android.material.appbar.AppBarLayout>-->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:liftOnScroll="true">
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/mainBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                style="@style/ThemeOverlay.MaterialComponents.Toolbar.Primary"
+                app:menu="@menu/menu_principal"
+                />
+        </com.google.android.material.appbar.AppBarLayout>
 
-<!--    </androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -38,14 +38,14 @@
         />
 
 
-<!--    <com.google.android.material.navigation.NavigationView-->
-<!--        android:id="@+id/nav_view"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_gravity="start"-->
-<!--        android:fitsSystemWindows="true"-->
-<!--        app:menu="@menu/menu_drawer"-->
-<!--        />-->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:menu="@menu/menu_drawer"
+        />
 
 
 </androidx.drawerlayout.widget.DrawerLayout>

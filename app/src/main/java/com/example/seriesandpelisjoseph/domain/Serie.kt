@@ -10,6 +10,8 @@ data class Serie(
     val imagen: String?,
     val tituloSerie: String,
     val descripcion: String,
-    val puntuacion: Int,
+    val fecha:String,
+    val puntuacion: Int?,
+
     val temporadas: List<Temporada>?
 ) : Parcelable

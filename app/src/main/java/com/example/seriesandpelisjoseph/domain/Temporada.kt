@@ -7,6 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class Temporada(
     val id:Int,
     val idApi:Int,
-    val numero:Int,
+    val nombre:String,
     val capitulos:List<Capitulos>? = null
 ):Parcelable

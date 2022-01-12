@@ -7,7 +7,7 @@ data class MultiMediaPojo(
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
-    val resultMediaPojos: List<ResultMediaPojo>,
+    val resultMultimediaPojos: List<ResultMultimediaPojo>,
     @SerializedName("total_pages")
     val totalPages: Int,
     @SerializedName("total_results")

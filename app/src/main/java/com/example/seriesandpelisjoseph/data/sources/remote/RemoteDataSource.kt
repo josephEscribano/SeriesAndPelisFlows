@@ -1,10 +1,12 @@
 package com.example.seriesandpelisjoseph.data.sources.remote
 
 import com.example.seriesandpelisjoseph.data.model.BaseApiResponse
-import retrofit2.http.Query
+import com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface.MultiMediaService
+import com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface.SerieService
 import javax.inject.Inject
 
-class RemoteDataSource @Inject constructor(private val multiMediaService: MultiMediaService) : BaseApiResponse() {
+class RemoteDataSource @Inject constructor(private val multiMediaService: MultiMediaService,
+                                private val serieService: SerieService) : BaseApiResponse() {
 
     suspend fun getMovie(titulo:String,pagina:Int) = safeApiCall { multiMediaService.getMovie(titulo,pagina) }
 
@@ -13,4 +15,6 @@ class RemoteDataSource @Inject constructor(private val multiMediaService: MultiM
     suspend fun getPopularMovies() = safeApiCall { multiMediaService.getPopularMovie() }
 
     suspend fun getPopularSeries() = safeApiCall { multiMediaService.getPopularSeries() }
+
+    suspend fun getSerie(tvId:Int) = safeApiCall {  serieService.getSerie(tvId)}
 }

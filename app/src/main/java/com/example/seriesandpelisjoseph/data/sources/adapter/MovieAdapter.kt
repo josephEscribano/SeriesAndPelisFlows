@@ -13,9 +13,14 @@ import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.RecyclerstylepelisBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 
-class MovieAdapter():ListAdapter<MultiMedia,MovieAdapter.ItemViewHolder>(DiffCallBack()) {
+class MovieAdapter(
+    val actions: MultimediaActions
+    ):ListAdapter<MultiMedia,MovieAdapter.ItemViewHolder>(DiffCallBack()) {
 
+    interface MultimediaActions{
+        fun navegar(multiMedia: MultiMedia)
 
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         return ItemViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.recyclerstylepelis, parent, false))
@@ -27,13 +32,16 @@ class MovieAdapter():ListAdapter<MultiMedia,MovieAdapter.ItemViewHolder>(DiffCal
     }
 
 
-    class ItemViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
+    inner class ItemViewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
         private val binding = RecyclerstylepelisBinding.bind(itemView)
-
         @SuppressLint("UseCompatLoadingForDrawables")
         fun bind(multiMedia: MultiMedia) {
+
+            itemView.setOnClickListener {
+                actions.navegar(multiMedia)
+            }
             with(binding){
-                image.loadAny( multiMedia.imagen?.let { binding.root.context.getString(R.string.pathImage) + multiMedia.imagen } ?: run { binding.root.context.getDrawable(R.drawable.img) } )
+                image.loadAny( multiMedia.imagen?.let { binding.root.context.getString(R.string.pathImage) + it } ?: run { binding.root.context.getDrawable(R.drawable.img) } )
                 titulo.setText(multiMedia.titulo)
             }
         }
