@@ -34,9 +34,7 @@
         android:label="fragment_mostrar_series"
         tools:layout="@layout/fragment_mostrar_series">
         <argument
-            android:name="serie"
-            android:defaultValue="@null"
-            app:argType="com.example.seriesandpelisjoseph.domain.Serie"
-            app:nullable="true" />
+            android:name="serieid"
+            app:argType="integer" />
     </fragment>
 </navigation>

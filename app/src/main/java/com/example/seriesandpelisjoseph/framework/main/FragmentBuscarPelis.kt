@@ -60,12 +60,11 @@ class FragmentBuscarPelis: Fragment() {
 
         moviesAdapter = MovieAdapter(object : MovieAdapter.MultimediaActions{
             override fun navegar(multiMedia: MultiMedia) {
+
                 if (multiMedia.tipo.equals(Constantes.MOVIE)){
                     action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarPelis(multiMedia)
                 } else if (multiMedia.tipo.equals(Constantes.TV)){
-
-                    viewModel.getSerie(multiMedia.idApi)
-                    action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarSeries(viewModel.SerieData.value)
+                    action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarSeries(multiMedia.idApi)
 
                 }
 

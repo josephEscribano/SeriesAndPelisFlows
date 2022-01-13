@@ -8,7 +8,7 @@ import retrofit2.http.Query
 import javax.inject.Inject
 
 @ActivityRetainedScoped
-class MovieRepository @Inject constructor(private val remoteDataSource: RemoteDataSource){
+class MultimediaRepository @Inject constructor(private val remoteDataSource: RemoteDataSource){
     suspend fun getMovie(titulo:String,pagina:Int) = withContext(Dispatchers.IO){remoteDataSource.getMovie(titulo,pagina)}
 
     suspend fun getAll(titulo:String,region:String) = withContext(Dispatchers.IO){remoteDataSource.getAll(titulo,region)}
@@ -17,5 +17,5 @@ class MovieRepository @Inject constructor(private val remoteDataSource: RemoteDa
 
     suspend fun getPopularSeries() = withContext(Dispatchers.IO){remoteDataSource.getPopularSeries()}
 
-    suspend fun getSerie(tvId:Int) = withContext(Dispatchers.IO){remoteDataSource.getSerie(tvId)}
+
 }

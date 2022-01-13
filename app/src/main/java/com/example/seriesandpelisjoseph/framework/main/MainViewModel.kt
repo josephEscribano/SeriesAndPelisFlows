@@ -9,8 +9,7 @@ import com.example.seriesandpelisjoseph.data.model.toActorMultimedia
 import com.example.seriesandpelisjoseph.data.model.toMovieMultimedia
 import com.example.seriesandpelisjoseph.data.model.toSerie
 import com.example.seriesandpelisjoseph.data.model.toSerieMultimedia
-import com.example.seriesandpelisjoseph.data.repositories.MovieRepository
-import com.example.seriesandpelisjoseph.domain.Movie
+import com.example.seriesandpelisjoseph.data.repositories.MultimediaRepository
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.utils.Constantes
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val movieRepository: MovieRepository): ViewModel(){
+class MainViewModel @Inject constructor(private val multimediaRepository: MultimediaRepository): ViewModel(){
 
     private val listaMovie = mutableListOf<MultiMedia>()
 
@@ -35,7 +34,7 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
 
     fun getMovie(titulo:String) {
         viewModelScope.launch {
-            val result = movieRepository.getMovie(titulo,1)
+            val result = multimediaRepository.getMovie(titulo,1)
             if (result is NetworkResult.Succcess)
                 if (listaMovie.isNotEmpty())
                     listaMovie.clear()
@@ -52,20 +51,10 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
 
     }
 
-    fun getSerie(tvId:Int) {
-        viewModelScope.launch {
-            val result = movieRepository.getSerie(tvId)
 
-            when(result){
-                is NetworkResult.Error -> _error.value = result.message ?: "Error"
-                is NetworkResult.Succcess -> result.data?.let { _SerieData.value = it.toSerie() }
-            }
-
-        }
-    }
     fun getPopularMovies(){
         viewModelScope.launch {
-            val result = movieRepository.getPopularMovies()
+            val result = multimediaRepository.getPopularMovies()
             if (result is NetworkResult.Succcess)
                 if (listaMovie.isNotEmpty())
                     listaMovie.clear()
@@ -80,7 +69,7 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
 
     fun getPopularSeries(){
         viewModelScope.launch {
-            val result = movieRepository.getPopularSeries()
+            val result = multimediaRepository.getPopularSeries()
             if (result is NetworkResult.Succcess)
                 if (listaMovie.isNotEmpty())
                     listaMovie.clear()
@@ -94,7 +83,7 @@ class MainViewModel @Inject constructor(private val movieRepository: MovieReposi
     }
     fun getMultiSearch(titulo: String){
         viewModelScope.launch {
-            val result = movieRepository.getAll(titulo,R.string.all.toString())
+            val result = multimediaRepository.getAll(titulo,R.string.all.toString())
             if (result is NetworkResult.Succcess)
                 if (listaMovie.isNotEmpty())
                     listaMovie.clear()
