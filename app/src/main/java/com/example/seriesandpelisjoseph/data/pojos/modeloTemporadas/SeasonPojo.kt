@@ -1,9 +1,9 @@
-package com.example.seriesandpelisjoseph.data.pojos.modeloCapitulos
+package com.example.seriesandpelisjoseph.data.pojos.modeloTemporadas
 
 
 import com.google.gson.annotations.SerializedName
 
-data class CapsPojo(
+data class SeasonPojo(
     @SerializedName("air_date")
     val airDate: String,
     @SerializedName("episodes")

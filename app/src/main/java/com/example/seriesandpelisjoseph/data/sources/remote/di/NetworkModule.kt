@@ -1,5 +1,6 @@
 package com.example.seriesandpelisjoseph.data.sources.remote.di
 
+import com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface.ActorService
 import com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface.MultiMediaService
 import com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface.SerieService
 import com.example.seriesandpelisjoseph.data.sources.remote.ServiceInterceptor
@@ -51,8 +52,6 @@ object NetworkModule {
 
     @Singleton
     @Provides
-//    fun provideConverterFactory(): GsonConverterFactory =
-//        GsonConverterFactory.create()
     fun getGson(): Gson {
         return GsonBuilder().registerTypeAdapter(
             LocalDate::class.java,
@@ -89,4 +88,8 @@ object NetworkModule {
     @Singleton
     @Provides
     fun serieService(retrofit: Retrofit): SerieService = retrofit.create(SerieService::class.java)
+
+    @Singleton
+    @Provides
+    fun actorService(retrofit: Retrofit): ActorService = retrofit.create(ActorService::class.java)
 }

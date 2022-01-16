@@ -6,11 +6,11 @@ import java.time.LocalDate
 
 @Parcelize
 data class MultiMedia(
-    val id: Int = 0,
+    val id: Int,
     val idApi: Int,
     val imagen: String?,
     val titulo: String,
     val descripcion: String?,
     val fechaEmision:String?,
-    val tipo: String
+    val tipo: String,
 ): Parcelable

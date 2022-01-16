@@ -7,4 +7,16 @@
         app:showAsAction="never"
         />
 
+    <item
+        android:id="@+id/fragmentSeriesFavoritas"
+        android:title="@string/seriesFavoritas"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/fragmentMoviesFavoritas"
+        android:title="@string/movieFav"
+        app:showAsAction="never"
+        />
+
 </menu>

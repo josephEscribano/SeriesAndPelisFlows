@@ -53,7 +53,7 @@ data class SeriePojo(
     @SerializedName("production_countries")
     val productionCountries: List<ProductionCountry>,
     @SerializedName("seasons")
-    val seasons: List<Season>,
+    val seasonPojos: List<SeasonPojo>,
     @SerializedName("spoken_languages")
     val spokenLanguages: List<SpokenLanguage>,
     @SerializedName("status")

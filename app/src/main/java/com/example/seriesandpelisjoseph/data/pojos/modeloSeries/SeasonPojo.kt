@@ -3,7 +3,7 @@ package com.example.seriesandpelisjoseph.data.pojos.modeloSeries
 
 import com.google.gson.annotations.SerializedName
 
-data class Season(
+data class SeasonPojo(
     @SerializedName("air_date")
     val airDate: String,
     @SerializedName("episode_count")

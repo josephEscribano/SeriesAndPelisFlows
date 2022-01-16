@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">gugle</string>
+    <string name="app_name">navFilms</string>
     <string name="tfPeli">Nombre</string>
     <string name="buscarPelis">Buscar</string>
     <string name="buscar_pelicula_titulo">Buscar Pelicula</string>
@@ -18,4 +18,11 @@
     <string name="tvDescripcion">Descripcion</string>
     <string name="tvTitulo">Titulo</string>
     <string name="tvFecha_de_emision">Fecha de Emision:</string>
+    <string name="tvNombre">Nombre</string>
+    <string name="biografia">Biografia</string>
+    <string name="nacimiento">Nacimiento</string>
+    <string name="favoritos">Favoritos</string>
+    <string name="db">multimedia_database</string>
+    <string name="seriesFavoritas">Series Favoritas</string>
+    <string name="movieFav">Peliculas Favoritas</string>
 </resources>

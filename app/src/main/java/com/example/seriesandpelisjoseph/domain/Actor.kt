@@ -9,6 +9,8 @@ data class Actor(
     val idApi:Int,
     val imagen:String?,
     val nombre:String,
-    val actuaMovie: List<Movie>?,
-    val actuaSerie:List<Serie>? = null
+    val biografia:String,
+    val nacimiento:String,
+    val idActuaMovie: Int?,
+    val idActuaSerie:Int?
 ) : Parcelable

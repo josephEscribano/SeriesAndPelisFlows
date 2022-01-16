@@ -4,61 +4,45 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavController
 import androidx.navigation.NavDirections
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.seriesandpelisjoseph.R
-import com.example.seriesandpelisjoseph.data.sources.adapter.MovieAdapter
-import com.example.seriesandpelisjoseph.databinding.ActivitymainBinding
+import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
 import com.example.seriesandpelisjoseph.databinding.FragmentBuscarPelisBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
-import com.example.seriesandpelisjoseph.domain.Serie
+import com.example.seriesandpelisjoseph.framework.viemodels.MainViewModel
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class FragmentBuscarPelis: Fragment() {
 
     private var _binding : FragmentBuscarPelisBinding? = null
     private val binding get() = _binding!!
-    private lateinit var binding2: ActivitymainBinding
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navController: NavController
     private lateinit var action:NavDirections
-    private lateinit var moviesAdapter: MovieAdapter
+    private lateinit var multimediaAdapter: MultimediaAdapter
+
     private val viewModel: MainViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
 
-
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.favoritos).isVisible = false
 
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        navController = binding.navView.findNavController()
-//        appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.fragmentBuscarPelis
-//            ), binding.fragmentPrincipal
-//        )
-//
-//        NavigationUI.setupWithNavController(binding.topBar, navController, appBarConfiguration)
-//        binding.navView.setupWithNavController(navController)
-
-        moviesAdapter = MovieAdapter(object : MovieAdapter.MultimediaActions{
+        multimediaAdapter = MultimediaAdapter(object : MultimediaAdapter.MultimediaActions{
             override fun navegar(multiMedia: MultiMedia) {
 
                 if (multiMedia.tipo.equals(Constantes.MOVIE)){
@@ -66,6 +50,8 @@ class FragmentBuscarPelis: Fragment() {
                 } else if (multiMedia.tipo.equals(Constantes.TV)){
                     action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarSeries(multiMedia.idApi)
 
+                }else{
+                    action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarActores(multiMedia.idApi)
                 }
 
                 findNavController().navigate(action)
@@ -73,10 +59,10 @@ class FragmentBuscarPelis: Fragment() {
 
         })
         binding.rvMovies.layoutManager = GridLayoutManager(this.context,2)
-        binding.rvMovies.adapter = moviesAdapter
+        binding.rvMovies.adapter = multimediaAdapter
 
-        viewModel.multiMedia.observe(this,{ movies ->
-            moviesAdapter.submitList(movies)
+        viewModel.multiMedia.observe(this,{ multimedia ->
+            multimediaAdapter.submitList(multimedia)
         })
 
         viewModel.error.observe(this,{
@@ -85,8 +71,9 @@ class FragmentBuscarPelis: Fragment() {
 
         viewModel.getPopularMovies()
 
-        configAppBar()
     }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,18 +83,8 @@ class FragmentBuscarPelis: Fragment() {
         return binding.root
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.menu_principal,menu)
-//    }
-
-    private fun configAppBar() {
-
-        binding.topBar.setNavigationOnClickListener {
-            binding.fragmentPrincipal.open()
-        }
-
-
-        val actionSearch = binding.topBar.menu.findItem(R.id.buscar).actionView as SearchView
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        val actionSearch = menu.findItem(R.id.buscar).actionView as SearchView
 
         actionSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -123,9 +100,10 @@ class FragmentBuscarPelis: Fragment() {
             }
 
         })
+    }
 
-        binding.topBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
+    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
                 R.id.pelis -> {
                     viewModel.getPopularMovies()
                     true
@@ -137,6 +115,8 @@ class FragmentBuscarPelis: Fragment() {
                 }
                 else -> false
             }
-        }
+
+        return super.onOptionsItemSelected(menuItem)
     }
+
 }

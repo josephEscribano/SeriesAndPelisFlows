@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     >
 
     <item
         android:id="@+id/series"
         android:title="@string/series"
-        app:showAsAction="always"
+        app:showAsAction="never"
         />
 
     <item
         android:id="@+id/pelis"
         android:title="@string/peliculas"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/favoritos"
+        android:title="@string/favoritos"
+        android:icon="@drawable/ic_baseline_favorite_24"
         app:showAsAction="ifRoom"
         />
 
@@ -23,5 +29,9 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always"
         />
+
+
+
+
 
 </menu>

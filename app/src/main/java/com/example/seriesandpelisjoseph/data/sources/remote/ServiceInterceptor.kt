@@ -7,6 +7,7 @@ class ServiceInterceptor: Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val url = chain.request().url.newBuilder()
             .addQueryParameter("api_key","568506b42ec6945fb6dc3819148be864")
+            .addQueryParameter("language","es")
             .build()
         val request = chain.request().newBuilder()
             .url(url)

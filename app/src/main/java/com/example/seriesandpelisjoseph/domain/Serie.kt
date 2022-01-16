@@ -12,6 +12,6 @@ data class Serie(
     val descripcion: String,
     val fecha:String,
     val puntuacion: Int?,
-
-    val temporadas: List<Temporada>?
+    val temporadas: List<Temporada>?,
+    val actores:List<Actor>?
 ) : Parcelable

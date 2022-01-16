@@ -16,6 +16,15 @@
         <action
             android:id="@+id/action_fragmentBuscarPelis_to_fragmentMostrarSeries"
             app:destination="@id/fragmentMostrarSeries" />
+        <action
+            android:id="@+id/action_fragmentBuscarPelis_to_fragmentMostrarActores"
+            app:destination="@id/fragmentMostrarActores" />
+        <action
+            android:id="@+id/action_fragmentBuscarPelis_to_fragmentSeriesFavoritas"
+            app:destination="@id/fragmentSeriesFavoritas" />
+        <action
+            android:id="@+id/action_fragmentBuscarPelis_to_fragmentMoviesFavoritas"
+            app:destination="@id/fragmentMoviesFavoritas" />
     </fragment>
     <fragment
         android:id="@+id/fragmentMostrarPelis"
@@ -33,6 +42,45 @@
         android:name="com.example.seriesandpelisjoseph.framework.main.FragmentMostrarSeries"
         android:label="fragment_mostrar_series"
         tools:layout="@layout/fragment_mostrar_series">
+        <argument
+            android:name="serieid"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMostrarActores"
+        android:name="com.example.seriesandpelisjoseph.framework.main.FragmentMostrarActores"
+        android:label="fragment_mostrar_actores"
+        tools:layout="@layout/fragment_mostrar_actores">
+        <action
+            android:id="@+id/action_fragmentMostrarActores_to_fragmentBuscarPelis"
+            app:destination="@id/fragmentBuscarPelis" />
+        <argument
+            android:name="idActor"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentSeriesFavoritas"
+        android:name="com.example.seriesandpelisjoseph.framework.main.FragmentSeriesFavoritas"
+        android:label="fragment_series_favoritas"
+        tools:layout="@layout/fragment_series_favoritas" >
+        <action
+            android:id="@+id/action_fragmentSeriesFavoritas_to_mostrarSeriesFavoritas"
+            app:destination="@id/mostrarSeriesFavoritas" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMoviesFavoritas"
+        android:name="com.example.seriesandpelisjoseph.framework.main.FragmentMoviesFavoritas"
+        android:label="fragment_movies_favoritas"
+        tools:layout="@layout/fragment_movies_favoritas">
+        <action
+            android:id="@+id/action_fragmentMoviesFavoritas_to_fragmentMostrarPelis"
+            app:destination="@id/fragmentMostrarPelis" />
+    </fragment>
+    <fragment
+        android:id="@+id/mostrarSeriesFavoritas"
+        android:name="com.example.seriesandpelisjoseph.MostrarSeriesFavoritas"
+        android:label="fragment_mostrar_series_favoritas"
+        tools:layout="@layout/fragment_mostrar_series_favoritas" >
         <argument
             android:name="serieid"
             app:argType="integer" />

@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.data.pojos.modeloCapitulos
+package com.example.seriesandpelisjoseph.data.pojos.modeloTemporadas
 
 
 import com.google.gson.annotations.SerializedName
