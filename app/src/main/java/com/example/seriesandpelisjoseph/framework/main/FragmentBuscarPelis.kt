@@ -9,20 +9,20 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.seriesandpelisjoseph.R
-import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
 import com.example.seriesandpelisjoseph.databinding.FragmentBuscarPelisBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
+import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
 import com.example.seriesandpelisjoseph.framework.viemodels.MainViewModel
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FragmentBuscarPelis: Fragment() {
+class FragmentBuscarPelis : Fragment() {
 
-    private var _binding : FragmentBuscarPelisBinding? = null
+    private var _binding: FragmentBuscarPelisBinding? = null
     private val binding get() = _binding!!
-    private lateinit var action:NavDirections
+    private lateinit var action: NavDirections
     private lateinit var multimediaAdapter: MultimediaAdapter
 
     private val viewModel: MainViewModel by viewModels()
@@ -42,31 +42,45 @@ class FragmentBuscarPelis: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        multimediaAdapter = MultimediaAdapter(object : MultimediaAdapter.MultimediaActions{
-            override fun navegar(multiMedia: MultiMedia) {
+        multimediaAdapter =
+            MultimediaAdapter(binding.root.context, object : MultimediaAdapter.MultimediaActions {
+                override fun navegar(multiMedia: MultiMedia) {
 
-                if (multiMedia.tipo.equals(Constantes.MOVIE)){
-                    action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarPelis(multiMedia)
-                } else if (multiMedia.tipo.equals(Constantes.TV)){
-                    action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarSeries(multiMedia.idApi)
+                    if (multiMedia.tipo.equals(Constantes.MOVIE)) {
+                        action =
+                            FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarPelis(
+                                multiMedia
+                            )
+                    } else if (multiMedia.tipo.equals(Constantes.TV)) {
+                        action =
+                            FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarSeries(
+                                multiMedia.idApi
+                            )
 
-                }else{
-                    action = FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarActores(multiMedia.idApi)
+                    } else {
+                        action =
+                            FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarActores(
+                                multiMedia.idApi
+                            )
+                    }
+
+                    findNavController().navigate(action)
                 }
 
-                findNavController().navigate(action)
-            }
+                override fun deleteItem(multiMedia: MultiMedia?) {
+                    TODO("Not yet implemented")
+                }
 
-        })
-        binding.rvMovies.layoutManager = GridLayoutManager(this.context,2)
+            })
+        binding.rvMovies.layoutManager = GridLayoutManager(this.context, 2)
         binding.rvMovies.adapter = multimediaAdapter
 
-        viewModel.multiMedia.observe(this,{ multimedia ->
+        viewModel.multiMedia.observe(this, { multimedia ->
             multimediaAdapter.submitList(multimedia)
         })
 
-        viewModel.error.observe(this,{
-            Snackbar.make(binding.root,it,Snackbar.LENGTH_SHORT).show()
+        viewModel.error.observe(this, {
+            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
         })
 
         viewModel.getPopularMovies()
@@ -74,19 +88,18 @@ class FragmentBuscarPelis: Fragment() {
     }
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentBuscarPelisBinding.inflate(inflater,container,false)
+        _binding = FragmentBuscarPelisBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val actionSearch = menu.findItem(R.id.buscar).actionView as SearchView
 
-        actionSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        actionSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -104,17 +117,17 @@ class FragmentBuscarPelis: Fragment() {
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-                R.id.pelis -> {
-                    viewModel.getPopularMovies()
-                    true
-                }
-
-                R.id.series -> {
-                    viewModel.getPopularSeries()
-                    true
-                }
-                else -> false
+            R.id.pelis -> {
+                viewModel.getPopularMovies()
+                true
             }
+
+            R.id.series -> {
+                viewModel.getPopularSeries()
+                true
+            }
+            else -> false
+        }
 
         return super.onOptionsItemSelected(menuItem)
     }

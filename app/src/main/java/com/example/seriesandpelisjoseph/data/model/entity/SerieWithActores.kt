@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 data class SerieWithActores(
-    @Embedded val serie:SerieEntity,
+    @Embedded val serie: SerieEntity,
     @Relation(
         parentColumn = "idSerie",
         entityColumn = "idActuaSerie"

@@ -7,14 +7,14 @@ import com.example.seriesandpelisjoseph.data.model.entity.*
 
 
 @Database(
-    entities = [ActorEntity::class, SerieEntity::class, MovieEntity::class,CapituloEntity::class,TemporadaEntity::class],
-    version = 17,
+    entities = [ActorEntity::class, SerieEntity::class, MovieEntity::class, CapituloEntity::class, TemporadaEntity::class],
+    version = 19,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
-abstract class MultimediaRoomDatabase : RoomDatabase(){
+abstract class MultimediaRoomDatabase : RoomDatabase() {
 
-    abstract fun serieDao() : MultimediaDao
+    abstract fun serieDao(): SerieDao
 
-    abstract fun movieDao() : MovieDao
+    abstract fun movieDao(): MovieDao
 }

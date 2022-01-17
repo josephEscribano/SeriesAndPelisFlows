@@ -7,11 +7,15 @@ import com.example.seriesandpelisjoseph.data.model.entity.SeriesWithTemporadas
 import com.example.seriesandpelisjoseph.data.model.entity.TemporadaEntity
 
 @Dao
-interface MultimediaDao {
+interface SerieDao {
 
     @Transaction
     @Query("SELECT * FROM series")
     suspend fun getSeries(): List<SeriesWithTemporadas>
+
+    @Transaction
+    @Query("SELECT  * FROM series where idSerie = :id")
+    suspend fun getSerie(id: Int): SeriesWithTemporadas
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSerie(serie: SerieEntity): Long
@@ -43,5 +47,20 @@ interface MultimediaDao {
 
     }
 
+    @Delete
+    suspend fun deleteSerie(serie: SerieEntity)
+
+    @Query("delete from temporadas where serieId = :id")
+    suspend fun deleteTemporada(id: Int)
+
+    @Query("delete from capitulos where temporadaId = :id")
+    suspend fun deleteCapitulo(id: Int?)
+
+    @Transaction
+    suspend fun deleteSerieTodo(seriesWithTemporadas: SeriesWithTemporadas) {
+        seriesWithTemporadas.temporadas?.map { deleteCapitulo(it.temporada?.idTemporada) }
+        deleteTemporada(seriesWithTemporadas.serie.idSerie)
+        deleteSerie(seriesWithTemporadas.serie)
+    }
 
 }

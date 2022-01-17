@@ -1,9 +1,7 @@
 package com.example.seriesandpelisjoseph.data.model.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.seriesandpelisjoseph.domain.Temporada
 
 @Entity(tableName = "series")
 data class SerieEntity(
@@ -13,6 +11,6 @@ data class SerieEntity(
     val imagen: String?,
     val tituloSerie: String,
     val descripcion: String,
-    val fecha:String,
+    val fecha: String,
     val puntuacion: Int?,
 )

@@ -1,16 +1,18 @@
 package com.example.seriesandpelisjoseph.framework.main
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.seriesandpelisjoseph.R
+import com.example.seriesandpelisjoseph.data.model.toMovie
 import com.example.seriesandpelisjoseph.databinding.FragmentMoviesFavoritasBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
@@ -19,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class FragmentMoviesFavoritas : Fragment() {
-    private var _binding : FragmentMoviesFavoritasBinding? = null
+    private var _binding: FragmentMoviesFavoritasBinding? = null
     private val binding get() = _binding!!
     private lateinit var multimediaAdapter: MultimediaAdapter
     private lateinit var action: NavDirections
@@ -35,7 +37,7 @@ class FragmentMoviesFavoritas : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMoviesFavoritasBinding.inflate(inflater,container,false)
+        _binding = FragmentMoviesFavoritasBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -50,23 +52,32 @@ class FragmentMoviesFavoritas : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        multimediaAdapter = MultimediaAdapter(object : MultimediaAdapter.MultimediaActions{
-            override fun navegar(multiMedia: MultiMedia) {
-                action = FragmentMoviesFavoritasDirections.actionFragmentMoviesFavoritasToFragmentMostrarPelis(multiMedia)
-                findNavController().navigate(action)
-            }
+        multimediaAdapter =
+            MultimediaAdapter(binding.root.context, object : MultimediaAdapter.MultimediaActions {
+                override fun navegar(multiMedia: MultiMedia) {
+                    action =
+                        FragmentMoviesFavoritasDirections.actionFragmentMoviesFavoritasToFragmentMostrarPelis(
+                            multiMedia
+                        )
+                    findNavController().navigate(action)
+                }
 
-        })
+                override fun deleteItem(multiMedia: MultiMedia?) {
+                    viewmodel.deleteMovie(multiMedia?.toMovie())
+                }
+
+            })
 
         binding.rvMoviesFav.adapter = multimediaAdapter
-
-        viewmodel.movieData.observe(this,{ multimedia ->
+        val touchHelper = ItemTouchHelper(multimediaAdapter.gesto)
+        touchHelper.attachToRecyclerView(binding.rvMoviesFav)
+        viewmodel.movieData.observe(this, { multimedia ->
             multimediaAdapter.submitList(multimedia)
 
         })
 
-        viewmodel.error.observe(this,{
-            Toast.makeText(this.requireContext(), it , Toast.LENGTH_SHORT).show()
+        viewmodel.error.observe(this, {
+            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
         })
 
         viewmodel.getMovie()

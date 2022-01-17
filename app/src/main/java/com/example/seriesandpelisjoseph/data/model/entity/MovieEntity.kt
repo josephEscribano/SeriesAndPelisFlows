@@ -2,7 +2,6 @@ package com.example.seriesandpelisjoseph.data.model.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDate
 
 @Entity(tableName = "movies")
 data class MovieEntity(
@@ -11,7 +10,7 @@ data class MovieEntity(
     val idApi: Int,
     val imagen: String?,
     val tituloPeli: String,
-    val visto:Boolean,
+    val visto: Boolean,
     val puntuacion: Int,
     val fechaEmision: String?,
     val descripcion: String?,

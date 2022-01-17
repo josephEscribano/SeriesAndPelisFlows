@@ -13,30 +13,30 @@ import com.example.seriesandpelisjoseph.utils.Constantes
 import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-
-class MostrarSeriesViewModel @Inject constructor(private val serieRepository: SerieRepository,
-                                                 private val insertSerie: InsertSerie) : ViewModel() {
+class MostrarSeriesViewModel @Inject constructor(
+    private val serieRepository: SerieRepository,
+    private val insertSerie: InsertSerie
+) : ViewModel() {
     private val listaCapitulosSelected = mutableListOf<Capitulo>()
 
     private val _serieData = MutableLiveData<Serie?>()
-    val serieData : LiveData<Serie?> get() = _serieData
+    val serieData: LiveData<Serie?> get() = _serieData
 
     private val _capituloData = MutableLiveData<List<Capitulo>?>()
-    val capituloData : LiveData<List<Capitulo>?> get() = _capituloData
+    val capituloData: LiveData<List<Capitulo>?> get() = _capituloData
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
 
-    fun getSerie(tvId:Int) {
+    fun getSerie(tvId: Int) {
         viewModelScope.launch {
             val result = serieRepository.getSerie(tvId)
 
-            when(result){
+            when (result) {
                 is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
                 is NetworkResult.Succcess -> _serieData.value = result.data
             }
@@ -44,22 +44,22 @@ class MostrarSeriesViewModel @Inject constructor(private val serieRepository: Se
         }
     }
 
-    fun getCapitulo(tvId: Int,seasonNumber:Int){
+    fun getCapitulo(tvId: Int, seasonNumber: Int?) {
         viewModelScope.launch {
-            val result = serieRepository.getCapitulos(tvId, seasonNumber)
-            when(result){
+            val result = seasonNumber?.let { serieRepository.getCapitulos(tvId, it) }
+            when (result) {
                 is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
                 is NetworkResult.Succcess -> _capituloData.value = result.data
             }
         }
     }
 
-    fun insertSerie(serie:Serie){
+    fun insertSerie(serie: Serie) {
         viewModelScope.launch {
 
             try {
                 insertSerie.invoke(serie)
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e(Constantes.ERROR_INSERTAR, e.message, e)
             }
 
@@ -68,15 +68,15 @@ class MostrarSeriesViewModel @Inject constructor(private val serieRepository: Se
 
 
     //CONTEXTBAR Y MULTISELECT
-    fun seleccionaCapitulo(capitulo: Capitulo){
-        if (isSelected(capitulo)){
+    fun seleccionaCapitulo(capitulo: Capitulo) {
+        if (isSelected(capitulo)) {
             listaCapitulosSelected.remove(capitulo)
-        }else{
+        } else {
             listaCapitulosSelected.add(capitulo)
         }
     }
 
-    fun isSelected(capitulo: Capitulo): Boolean{
+    fun isSelected(capitulo: Capitulo): Boolean {
         return listaCapitulosSelected.contains(capitulo)
     }
 

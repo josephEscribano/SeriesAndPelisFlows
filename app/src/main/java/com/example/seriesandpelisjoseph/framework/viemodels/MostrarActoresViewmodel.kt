@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MostrarActoresViewmodel @Inject constructor(private val actorRepository: ActorRepository) : ViewModel() {
+class MostrarActoresViewmodel @Inject constructor(private val actorRepository: ActorRepository) :
+    ViewModel() {
     private val _actorData = MutableLiveData<Actor?>()
     val actorData: LiveData<Actor?> get() = _actorData
 

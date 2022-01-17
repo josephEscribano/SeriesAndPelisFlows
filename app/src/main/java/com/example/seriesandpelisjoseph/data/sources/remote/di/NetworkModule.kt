@@ -17,18 +17,6 @@ import java.lang.reflect.Type
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import com.google.gson.JsonPrimitive
-
-import com.google.gson.JsonSerializer
-
-import com.google.gson.JsonDeserializer
-
-import com.google.gson.GsonBuilder
-
-import com.google.gson.Gson
-
-
-
 
 
 @Module
@@ -68,6 +56,7 @@ object NetworkModule {
                     )
                 } as JsonSerializer<LocalDate>).create()
     }
+
     @Singleton
     @Provides
     fun provideRetrofit(

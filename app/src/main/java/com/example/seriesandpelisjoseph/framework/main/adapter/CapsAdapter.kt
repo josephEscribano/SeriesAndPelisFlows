@@ -1,36 +1,32 @@
 package com.example.seriesandpelisjoseph.framework.main.adapter
 
 import android.graphics.Color
-import android.graphics.ImageFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isGone
-import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.RecyclercapsBinding
 import com.example.seriesandpelisjoseph.domain.Capitulo
-import com.example.seriesandpelisjoseph.domain.MultiMedia
 
-class CapsAdapter(val actions:CapsActions?) : ListAdapter<Capitulo, CapsAdapter.ItemviewHolder>(DiffCallBackCaps()) {
+class CapsAdapter(val actions: CapsActions) :
+    ListAdapter<Capitulo, CapsAdapter.ItemviewHolder>(DiffCallBackCaps()) {
 
-    interface CapsActions{
+    interface CapsActions {
 
         fun onStarSelectMode()
         fun itemHasClicked(capitulo: Capitulo)
-        fun isItemSelected(capitulo: Capitulo) : Boolean
+        fun isItemSelected(capitulo: Capitulo): Boolean
     }
 
-    fun resetSelectMode(){
+    fun resetSelectMode() {
         selectMode = false
         notifyDataSetChanged()
     }
 
-    private var selectMode : Boolean = false
+    private var selectMode: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemviewHolder {
         return ItemviewHolder(
@@ -46,55 +42,51 @@ class CapsAdapter(val actions:CapsActions?) : ListAdapter<Capitulo, CapsAdapter.
     inner class ItemviewHolder(itemview: View) : RecyclerView.ViewHolder(itemview) {
         val binding = RecyclercapsBinding.bind(itemview)
         fun bind(capitulo: Capitulo) {
-            binding.tvCap.setText(capitulo.nombre)
-            if(actions != null){
-                itemView.setOnLongClickListener {
-                    if (!selectMode){
-                        selectMode = true
-                        actions.onStarSelectMode()
-                        capitulo.isSelected = true
-                        actions.itemHasClicked(capitulo)
-                        notifyDataSetChanged()
-                    }
-                    true
+
+            itemView.setOnLongClickListener {
+                if (!selectMode) {
+                    selectMode = true
+                    actions.onStarSelectMode()
+                    capitulo.isSelected = true
+                    actions.itemHasClicked(capitulo)
+                    notifyDataSetChanged()
                 }
-
-                binding.checkBox.setOnClickListener {
-                    if (selectMode){
-                        if (binding.checkBox.isChecked){
-                            capitulo.isSelected = true
-                            itemView.setBackgroundColor(Color.TRANSPARENT)
-                            binding.checkBox.isChecked = true
-
-                        }else{
-                            capitulo.isSelected = false
-                            itemView.setBackgroundColor(Color.WHITE)
-                            binding.checkBox.isChecked = false
-
-                        }
-
-                        actions.itemHasClicked(capitulo)
-                    }
-                }
-
-
-                if (selectMode){
-                    binding.checkBox.visibility = View.VISIBLE
-                } else{
-                    binding.checkBox.visibility = View.GONE
-                }
-
-                if (actions.isItemSelected(capitulo)){
-                    itemView.setBackgroundColor(Color.TRANSPARENT)
-                    binding.checkBox.isChecked = true
-                }else{
-                    itemView.setBackgroundColor(Color.WHITE)
-                    binding.checkBox.isChecked = false
-                }
+                true
             }
 
-        }
+            binding.checkBox.setOnClickListener {
+                if (selectMode) {
+                    if (binding.checkBox.isChecked) {
+                        capitulo.isSelected = true
+                        itemView.setBackgroundColor(Color.TRANSPARENT)
+                        binding.checkBox.isChecked = true
 
+                    } else {
+                        capitulo.isSelected = false
+                        itemView.setBackgroundColor(Color.WHITE)
+                        binding.checkBox.isChecked = false
+
+                    }
+
+                    actions.itemHasClicked(capitulo)
+                }
+            }
+            binding.tvCap.text = capitulo.nombre
+
+            if (selectMode) {
+                binding.checkBox.visibility = View.VISIBLE
+            } else {
+                binding.checkBox.visibility = View.GONE
+            }
+
+            if (actions.isItemSelected(capitulo)) {
+                itemView.setBackgroundColor(Color.TRANSPARENT)
+                binding.checkBox.isChecked = true
+            } else {
+                itemView.setBackgroundColor(Color.WHITE)
+                binding.checkBox.isChecked = false
+            }
+        }
     }
 }
 

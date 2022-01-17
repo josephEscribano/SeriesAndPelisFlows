@@ -1,7 +1,6 @@
 package com.example.seriesandpelisjoseph.data.repositories
 
 import com.example.seriesandpelisjoseph.data.model.entity.SeriesWithTemporadas
-import com.example.seriesandpelisjoseph.data.model.entity.TemporadasWithCapitulos
 import com.example.seriesandpelisjoseph.data.sources.remote.LocalDataSource
 import com.example.seriesandpelisjoseph.data.sources.remote.RemoteDataSource
 import dagger.hilt.android.scopes.ActivityRetainedScoped
@@ -18,13 +17,24 @@ class SerieRepository @Inject constructor(
     suspend fun getSerie(tvId: Int) =
         withContext(Dispatchers.IO) { remoteDataSource.getSerie(tvId) }
 
-    suspend fun getCapitulos(tvId: Int, seasonNumber: Int) = withContext(Dispatchers.IO) { remoteDataSource.getCapitulos(tvId, seasonNumber) }
+    suspend fun getCapitulos(tvId: Int, seasonNumber: Int) =
+        withContext(Dispatchers.IO) { remoteDataSource.getCapitulos(tvId, seasonNumber) }
 
-    suspend fun getSeries() : List<SeriesWithTemporadas>  = withContext(Dispatchers.IO) {
+    suspend fun getSeries(): List<SeriesWithTemporadas> = withContext(Dispatchers.IO) {
         localDataSource.getSeries()
     }
 
-    suspend fun insertSerie(seriesWithTemporadas: SeriesWithTemporadas) = withContext(Dispatchers.IO) {
-        localDataSource.insertSerie(seriesWithTemporadas)
+    suspend fun getSerieRoom(id: Int): SeriesWithTemporadas = withContext(Dispatchers.IO) {
+        localDataSource.getSerie(id)
     }
+
+    suspend fun insertSerie(seriesWithTemporadas: SeriesWithTemporadas) =
+        withContext(Dispatchers.IO) {
+            localDataSource.insertSerie(seriesWithTemporadas)
+        }
+
+    suspend fun deleteSerie(seriesWithTemporadas: SeriesWithTemporadas) =
+        withContext(Dispatchers.IO) {
+            localDataSource.deleteSerie(seriesWithTemporadas)
+        }
 }

@@ -3,6 +3,7 @@ package com.example.seriesandpelisjoseph.data.sources.remote.ApiInterface
 import com.example.seriesandpelisjoseph.data.pojos.multSearch.MultiMediaPojo
 import com.example.seriesandpelisjoseph.data.pojos.popularMovie.PopularMoviePojo
 import com.example.seriesandpelisjoseph.data.pojos.popularSeries.PopularSeriePojo
+import com.example.seriesandpelisjoseph.utils.Constantes
 
 import retrofit2.Response
 import retrofit2.http.GET
@@ -10,16 +11,17 @@ import retrofit2.http.Query
 
 interface MultiMediaService {
 
-    @GET("search/movie")
-    suspend fun getMovie(@Query("query") titulo:String,@Query("page") pagina:Int): Response<MultiMediaPojo>
 
-    @GET("search/multi")
-    suspend fun getAll(@Query("query") titulo:String,@Query("region") region:String) : Response<MultiMediaPojo>
+    @GET(Constantes.MULTI_PATH)
+    suspend fun getAll(
+        @Query(Constantes.QUERY) titulo: String,
+        @Query(Constantes.REGION) region: String
+    ): Response<MultiMediaPojo>
 
-    @GET("movie/popular")
-    suspend fun getPopularMovie() : Response<PopularMoviePojo>
+    @GET(Constantes.MOVIE_POPULAR_PATH)
+    suspend fun getPopularMovie(): Response<PopularMoviePojo>
 
-    @GET("tv/popular")
-    suspend fun getPopularSeries() : Response<PopularSeriePojo>
+    @GET(Constantes.SERIE_POPULAR_PATH)
+    suspend fun getPopularSeries(): Response<PopularSeriePojo>
 
 }

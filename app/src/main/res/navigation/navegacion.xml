@@ -40,8 +40,7 @@
     <fragment
         android:id="@+id/fragmentMostrarSeries"
         android:name="com.example.seriesandpelisjoseph.framework.main.FragmentMostrarSeries"
-        android:label="fragment_mostrar_series"
-        tools:layout="@layout/fragment_mostrar_series">
+        android:label="fragment_mostrar_series">
         <argument
             android:name="serieid"
             app:argType="integer" />
@@ -62,10 +61,10 @@
         android:id="@+id/fragmentSeriesFavoritas"
         android:name="com.example.seriesandpelisjoseph.framework.main.FragmentSeriesFavoritas"
         android:label="fragment_series_favoritas"
-        tools:layout="@layout/fragment_series_favoritas" >
+        tools:layout="@layout/fragment_series_favoritas">
         <action
-            android:id="@+id/action_fragmentSeriesFavoritas_to_mostrarSeriesFavoritas"
-            app:destination="@id/mostrarSeriesFavoritas" />
+            android:id="@+id/action_fragmentSeriesFavoritas_to_fragmentMostrarSeries2"
+            app:destination="@id/fragmentMostrarSeries" />
     </fragment>
     <fragment
         android:id="@+id/fragmentMoviesFavoritas"
@@ -75,14 +74,5 @@
         <action
             android:id="@+id/action_fragmentMoviesFavoritas_to_fragmentMostrarPelis"
             app:destination="@id/fragmentMostrarPelis" />
-    </fragment>
-    <fragment
-        android:id="@+id/mostrarSeriesFavoritas"
-        android:name="com.example.seriesandpelisjoseph.MostrarSeriesFavoritas"
-        android:label="fragment_mostrar_series_favoritas"
-        tools:layout="@layout/fragment_mostrar_series_favoritas" >
-        <argument
-            android:name="serieid"
-            app:argType="integer" />
     </fragment>
 </navigation>

@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val multimediaRepository: MultimediaRepository): ViewModel(){
+class MainViewModel @Inject constructor(private val multimediaRepository: MultimediaRepository) :
+    ViewModel() {
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
@@ -23,10 +24,10 @@ class MainViewModel @Inject constructor(private val multimediaRepository: Multim
     val multiMedia: LiveData<List<MultiMedia>?> get() = _multimedia
 
 
-    fun getPopularMovies(){
+    fun getPopularMovies() {
         viewModelScope.launch {
             val result = multimediaRepository.getPopularMovies()
-            when(result){
+            when (result) {
                 is NetworkResult.Succcess -> _multimedia.value = result.data
                 is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
             }
@@ -34,21 +35,22 @@ class MainViewModel @Inject constructor(private val multimediaRepository: Multim
         }
     }
 
-    fun getPopularSeries(){
+    fun getPopularSeries() {
         viewModelScope.launch {
             val result = multimediaRepository.getPopularSeries()
-            when(result){
+            when (result) {
                 is NetworkResult.Succcess -> _multimedia.value = result.data
                 is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
             }
 
         }
     }
-    fun getMultiSearch(titulo: String){
-        viewModelScope.launch {
-            val result = multimediaRepository.getAll(titulo,R.string.all.toString())
 
-            when(result){
+    fun getMultiSearch(titulo: String) {
+        viewModelScope.launch {
+            val result = multimediaRepository.getAll(titulo, R.string.all.toString())
+
+            when (result) {
                 is NetworkResult.Succcess -> _multimedia.value = result.data
                 is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
             }

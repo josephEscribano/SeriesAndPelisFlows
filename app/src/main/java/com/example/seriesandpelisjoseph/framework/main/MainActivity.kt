@@ -5,7 +5,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitymainBinding
     private lateinit var navController: NavController
-    private val viewModel: MainViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.findNavController()
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.fragmentBuscarPelis,R.id.fragmentSeriesFav,R.id.fragmentMovieFav
+                R.id.fragmentBuscarPelis, R.id.fragmentSeriesFav, R.id.fragmentMovieFav
             ), binding.mainActivity
         ) {
             onBackPressed()
@@ -44,8 +42,6 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setupWithNavController(navController)
 
 
-
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -53,13 +49,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_principal,menu)
+        menuInflater.inflate(R.menu.menu_principal, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.fragmentBuscarPelis,R.id.fragmentSeriesFavoritas -> {
+            R.id.fragmentBuscarPelis, R.id.fragmentSeriesFavoritas -> {
                 item.onNavDestinationSelected(navController)
                 true
             }

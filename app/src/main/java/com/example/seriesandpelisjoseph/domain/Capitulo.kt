@@ -5,11 +5,11 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Capitulo(
-    val id:Int,
-    val idApi:Int,
+    val id: Int,
+    val idApi: Int,
     var idTemporada: Int?,
-    val nombre:String,
-    val visto:Boolean,
-    val numero:Int,
-    var isSelected:Boolean = false
-):Parcelable
+    val nombre: String,
+    val visto: Boolean,
+    val numero: Int,
+    var isSelected: Boolean = false
+) : Parcelable

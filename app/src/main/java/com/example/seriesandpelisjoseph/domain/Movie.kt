@@ -9,7 +9,7 @@ data class Movie(
     val idApi: Int,
     val imagen: String?,
     val tituloPeli: String,
-    val visto:Boolean,
+    val visto: Boolean,
     val puntuacion: Int,
     val descripcion: String?,
     val fechaEmision: String?,
