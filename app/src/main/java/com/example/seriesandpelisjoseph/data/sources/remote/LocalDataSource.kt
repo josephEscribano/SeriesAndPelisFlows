@@ -18,6 +18,7 @@ class LocalDataSource @Inject constructor(
     suspend fun getSerie(id: Int): SeriesWithTemporadas = serieDao.getSerie(id)
     suspend fun deleteSerie(seriesWithTemporadas: SeriesWithTemporadas) =
         serieDao.deleteSerieTodo(seriesWithTemporadas)
+    suspend fun repetidoSerie(id:Int) : Int = serieDao.repetidosSeries(id)
 
     //MOVIE
     suspend fun repetido(id:Int) : Int = movieDao.repetidos(id)

@@ -63,8 +63,8 @@
         android:label="fragment_series_favoritas"
         tools:layout="@layout/fragment_series_favoritas">
         <action
-            android:id="@+id/action_fragmentSeriesFavoritas_to_fragmentMostrarSeries2"
-            app:destination="@id/fragmentMostrarSeries" />
+            android:id="@+id/action_fragmentSeriesFavoritas_to_fragmentMostrarFavRoom"
+            app:destination="@id/fragmentMostrarFavRoom" />
     </fragment>
     <fragment
         android:id="@+id/fragmentMoviesFavoritas"
@@ -74,5 +74,13 @@
         <action
             android:id="@+id/action_fragmentMoviesFavoritas_to_fragmentMostrarPelis"
             app:destination="@id/fragmentMostrarPelis" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentMostrarFavRoom"
+        android:name="com.example.seriesandpelisjoseph.framework.main.FragmentMostrarFavRoom"
+        android:label="fragment_mostrar_fav_room">
+        <argument
+            android:name="idSerie"
+            app:argType="integer" />
     </fragment>
 </navigation>

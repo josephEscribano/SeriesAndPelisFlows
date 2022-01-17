@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.domain.Serie
-import com.example.seriesandpelisjoseph.usecases.DeleteSerie
-import com.example.seriesandpelisjoseph.usecases.GetSerie
-import com.example.seriesandpelisjoseph.usecases.GetSeries
+import com.example.seriesandpelisjoseph.usecases.*
 import com.example.seriesandpelisjoseph.utils.Constantes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,6 +23,8 @@ class SeriesFavViewModel @Inject constructor(
 
     private val _serieFavData = MutableLiveData<List<MultiMedia>?>()
     val serieData: LiveData<List<MultiMedia>?> get() = _serieFavData
+
+
 
     private val _serie = MutableLiveData<Serie>()
     val serie: LiveData<Serie> get() = _serie
@@ -66,4 +66,6 @@ class SeriesFavViewModel @Inject constructor(
 
         }
     }
+
+
 }

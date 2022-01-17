@@ -56,7 +56,7 @@ class FragmentSeriesFavoritas : Fragment() {
             MultimediaAdapter(binding.root.context, object : MultimediaAdapter.MultimediaActions {
                 override fun navegar(multiMedia: MultiMedia) {
                     action =
-                        FragmentSeriesFavoritasDirections.actionFragmentSeriesFavoritasToFragmentMostrarSeries2(
+                        FragmentSeriesFavoritasDirections.actionFragmentSeriesFavoritasToFragmentMostrarFavRoom(
                             multiMedia.id
                         )
                     findNavController().navigate(action)

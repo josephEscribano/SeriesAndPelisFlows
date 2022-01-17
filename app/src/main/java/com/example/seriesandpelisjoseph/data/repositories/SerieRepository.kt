@@ -37,4 +37,8 @@ class SerieRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             localDataSource.deleteSerie(seriesWithTemporadas)
         }
+
+    suspend fun repetidoSerie(id:Int) : Int = withContext(Dispatchers.IO) {
+        localDataSource.repetidoSerie(id)
+    }
 }

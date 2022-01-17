@@ -13,6 +13,9 @@ interface SerieDao {
     @Query("SELECT * FROM series")
     suspend fun getSeries(): List<SeriesWithTemporadas>
 
+    @Query("SELECT count(*) from series where idApi = :id")
+    suspend fun repetidosSeries(id:Int) : Int
+
     @Transaction
     @Query("SELECT  * FROM series where idSerie = :id")
     suspend fun getSerie(id: Int): SeriesWithTemporadas

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.seriesandpelisjoseph.data.repositories.SerieRepository
 import com.example.seriesandpelisjoseph.domain.Capitulo
 import com.example.seriesandpelisjoseph.domain.Serie
+import com.example.seriesandpelisjoseph.usecases.GetSerie
 import com.example.seriesandpelisjoseph.usecases.InsertSerie
 import com.example.seriesandpelisjoseph.usecases.RepetidoSerie
 import com.example.seriesandpelisjoseph.utils.Constantes
@@ -17,11 +18,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MostrarSeriesViewModel @Inject constructor(
+class MostrarSeriesFavViewModel @Inject constructor(
     private val serieRepository: SerieRepository,
-    private val insertSerie: InsertSerie,
-    private val repetidoSerie: RepetidoSerie
+    private val getSerie: GetSerie
 ) : ViewModel() {
+
     private val listaCapitulosSelected = mutableListOf<Capitulo>()
 
     private val _serieData = MutableLiveData<Serie?>()
@@ -33,17 +34,13 @@ class MostrarSeriesViewModel @Inject constructor(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
-    private val _repetidoData = MutableLiveData<Int>()
-    val repetidoData: LiveData<Int> get() = _repetidoData
-
-
-    fun getSerie(tvId: Int) {
+    fun getSerie(id: Int?) {
         viewModelScope.launch {
-            val result = serieRepository.getSerie(tvId)
-
-            when (result) {
-                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
-                is NetworkResult.Succcess -> _serieData.value = result.data
+            try {
+                _serieData.value = id?.let { getSerie.invoke(it) }
+            } catch (e: Exception) {
+                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
+                _error.value = e.message
             }
 
         }
@@ -55,29 +52,6 @@ class MostrarSeriesViewModel @Inject constructor(
             when (result) {
                 is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
                 is NetworkResult.Succcess -> _capituloData.value = result.data
-            }
-        }
-    }
-
-    fun insertSerie(serie: Serie) {
-        viewModelScope.launch {
-
-            try {
-                insertSerie.invoke(serie)
-            } catch (e: Exception) {
-                Log.e(Constantes.ERROR_INSERTAR, e.message, e)
-            }
-
-        }
-    }
-
-    fun repetidoSerie(id:Int){
-        viewModelScope.launch {
-            try {
-                _repetidoData.value = repetidoSerie.invoke(id)
-            }catch (e: Exception) {
-                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
-                _error.value = e.message
             }
         }
     }

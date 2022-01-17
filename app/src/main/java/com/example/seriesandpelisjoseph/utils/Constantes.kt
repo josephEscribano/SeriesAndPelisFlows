@@ -19,6 +19,7 @@ object Constantes {
     const val PELICULA_REPETIDA = "La pelicula ya existe en favoritos"
     const val VISTO = "Visto"
     const val SERIE_AÑADIDA= "Serie Añadida"
+    const val SERIE_REPETIDA = "La serie ya existe en favoritos"
     //PATHS
     const val ACTOR_PATH = "person/{id}"
     const val MULTI_PATH = "search/multi"
