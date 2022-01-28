@@ -3,7 +3,6 @@ package com.example.seriesandpelisjoseph.framework.main
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -11,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.*
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.ActivitymainBinding
-import com.example.seriesandpelisjoseph.framework.viemodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

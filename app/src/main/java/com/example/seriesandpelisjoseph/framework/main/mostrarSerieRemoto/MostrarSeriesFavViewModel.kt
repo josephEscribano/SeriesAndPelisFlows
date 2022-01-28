@@ -1,27 +1,27 @@
-package com.example.seriesandpelisjoseph.framework.viemodels
+package com.example.seriesandpelisjoseph.framework.main.mostrarSerieRemoto
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.seriesandpelisjoseph.data.repositories.SerieRepository
 import com.example.seriesandpelisjoseph.domain.Capitulo
 import com.example.seriesandpelisjoseph.domain.Serie
+import com.example.seriesandpelisjoseph.usecases.GetCapitulos
 import com.example.seriesandpelisjoseph.usecases.GetSerie
-import com.example.seriesandpelisjoseph.usecases.InsertSerie
-import com.example.seriesandpelisjoseph.usecases.RepetidoSerie
+import com.example.seriesandpelisjoseph.usecases.UpdateCapitulo
 import com.example.seriesandpelisjoseph.utils.Constantes
-import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MostrarSeriesFavViewModel @Inject constructor(
-    private val serieRepository: SerieRepository,
-    private val getSerie: GetSerie
-) : ViewModel() {
+    private val getCapitulos: GetCapitulos,
+    private val getSerie: GetSerie,
+    private val updateCapitulo: UpdateCapitulo,
+
+    ) : ViewModel() {
 
     private val listaCapitulosSelected = mutableListOf<Capitulo>()
 
@@ -46,15 +46,30 @@ class MostrarSeriesFavViewModel @Inject constructor(
         }
     }
 
-    fun getCapitulo(tvId: Int, seasonNumber: Int?) {
+    fun getCapitulo(idTemporada: Int?) {
         viewModelScope.launch {
-            val result = seasonNumber?.let { serieRepository.getCapitulos(tvId, it) }
-            when (result) {
-                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
-                is NetworkResult.Succcess -> _capituloData.value = result.data
+            try {
+                _capituloData.value = idTemporada?.let { getCapitulos.invoke(it) }
+            } catch (e: Exception) {
+                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
+                _error.value = e.message
             }
         }
     }
+
+    fun updateCapitulo() {
+        viewModelScope.launch {
+            try {
+                listaCapitulosSelected.forEach { it.visto = true }
+                updateCapitulo.invoke(listaCapitulosSelected.toList())
+
+            } catch (e: Exception) {
+                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
+                _error.value = e.message
+            }
+        }
+    }
+
 
     //CONTEXTBAR Y MULTISELECT
     fun seleccionaCapitulo(capitulo: Capitulo) {

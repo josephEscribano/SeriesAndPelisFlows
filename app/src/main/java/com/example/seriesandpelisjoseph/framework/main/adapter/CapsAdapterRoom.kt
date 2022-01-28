@@ -48,6 +48,7 @@ class CapsAdapterRoom(val actions: CapsActions) :
                     selectMode = true
                     actions.onStarSelectMode()
                     capitulo.isSelected = true
+                    binding.checkBox.isChecked = true
                     actions.itemHasClicked(capitulo)
                     notifyDataSetChanged()
                 }
@@ -72,7 +73,9 @@ class CapsAdapterRoom(val actions: CapsActions) :
                 }
             }
             binding.tvCap.text = capitulo.nombre
-
+            if (capitulo.visto) {
+                itemView.setBackgroundColor(Color.GREEN)
+            }
             if (selectMode) {
                 binding.checkBox.visibility = View.VISIBLE
             } else {

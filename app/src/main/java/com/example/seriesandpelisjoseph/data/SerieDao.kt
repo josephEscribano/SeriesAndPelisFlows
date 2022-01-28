@@ -13,8 +13,11 @@ interface SerieDao {
     @Query("SELECT * FROM series")
     suspend fun getSeries(): List<SeriesWithTemporadas>
 
+    @Query("SELECT * FROM CAPITULOS where temporadaId = (select idTemporada from temporadas where idApi = :id) ")
+    suspend fun getCapitulos(id: Int): List<CapituloEntity>
+
     @Query("SELECT count(*) from series where idApi = :id")
-    suspend fun repetidosSeries(id:Int) : Int
+    suspend fun repetidosSeries(id: Int): Int
 
     @Transaction
     @Query("SELECT  * FROM series where idSerie = :id")
@@ -49,6 +52,14 @@ interface SerieDao {
 
 
     }
+
+
+    suspend fun updateCapitulos(listCapituloEntity: List<CapituloEntity>) {
+        listCapituloEntity.map { updateCapitulo(it) }
+    }
+
+    @Update
+    suspend fun updateCapitulo(capituloEntity: CapituloEntity)
 
     @Delete
     suspend fun deleteSerie(serie: SerieEntity)

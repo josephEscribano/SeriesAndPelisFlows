@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main
+package com.example.seriesandpelisjoseph.framework.main.mostrarSeriesFavRoom
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -6,17 +6,14 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import coil.loadAny
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarSeriesBinding
-import com.example.seriesandpelisjoseph.domain.Capitulo
 import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.framework.main.adapter.CapsAdapter
-import com.example.seriesandpelisjoseph.framework.viemodels.MostrarSeriesViewModel
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,13 +23,8 @@ class FragmentMostrarSeries : Fragment() {
     private var _binding: FragmentMostrarSeriesBinding? = null
     private val binding get() = _binding!!
     private lateinit var capsAdapter: CapsAdapter
-    private lateinit var actionMode: ActionMode
     private lateinit var serieFinal: Serie
     private val viewModel: MostrarSeriesViewModel by viewModels()
-
-    private val callBack by lazy {
-        configContextBar()
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,33 +39,6 @@ class FragmentMostrarSeries : Fragment() {
         menu.findItem(R.id.buscar).isVisible = false
     }
 
-    private fun configContextBar() = object : ActionMode.Callback {
-        override fun onCreateActionMode(p0: ActionMode?, menu: Menu?): Boolean {
-            requireActivity().menuInflater.inflate(R.menu.context_bar, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(p0: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
-                R.id.visto -> {
-                    Snackbar.make(binding.root, Constantes.VISTO, Snackbar.LENGTH_LONG)
-                    return true
-                }
-                else -> false
-            }
-        }
-
-        override fun onDestroyActionMode(p0: ActionMode?) {
-            capsAdapter.resetSelectMode()
-            viewModel.clearList()
-        }
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -86,23 +51,7 @@ class FragmentMostrarSeries : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args: FragmentMostrarSeriesArgs by navArgs()
-        capsAdapter = CapsAdapter(object : CapsAdapter.CapsActions {
-            override fun onStarSelectMode() {
-                (requireActivity() as MainActivity).startSupportActionMode(callBack)?.let {
-                    actionMode = it
-                    actionMode.title = Constantes.NUM_SELECTED
-                }
-            }
-
-            override fun itemHasClicked(capitulo: Capitulo) {
-                viewModel.seleccionaCapitulo(capitulo)
-                actionMode.title = "${viewModel.getLista().size} ${Constantes.SELECTED}"
-            }
-
-            override fun isItemSelected(capitulo: Capitulo): Boolean =
-                viewModel.isSelected(capitulo)
-
-        })
+        capsAdapter = CapsAdapter()
         binding.rvCaps.adapter = capsAdapter
         viewModel.getSerie(args.serieid)
         viewModel.serieData.observe(this, {
@@ -194,12 +143,20 @@ class FragmentMostrarSeries : Fragment() {
         when (menuItem.itemId) {
             R.id.favoritos -> {
                 viewModel.repetidoSerie(serieFinal.idApi)
-                viewModel.repetidoData.observe(this@FragmentMostrarSeries,{
-                    if (it == 0){
+                viewModel.repetidoData.observe(this@FragmentMostrarSeries, {
+                    if (it == 0) {
                         viewModel.insertSerie(serieFinal)
-                        Toast.makeText(this.requireContext(), Constantes.SERIE_AÑADIDA, Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(this.requireContext(), Constantes.SERIE_REPETIDA, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this.requireContext(),
+                            Constantes.SERIE_AÑADIDA,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            this.requireContext(),
+                            Constantes.SERIE_REPETIDA,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 })
 

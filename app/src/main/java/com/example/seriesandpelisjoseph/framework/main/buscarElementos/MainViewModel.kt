@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.viemodels
+package com.example.seriesandpelisjoseph.framework.main.buscarElementos
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

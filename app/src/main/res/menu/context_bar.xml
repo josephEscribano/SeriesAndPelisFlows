@@ -5,7 +5,7 @@
     <item
         android:id="@+id/visto"
         android:icon="@drawable/ic_baseline_remove_red_eye_24"
-        android:title="@string/favoritos"
+        android:title="@string/visto"
         app:showAsAction="ifRoom"
         >
     </item>

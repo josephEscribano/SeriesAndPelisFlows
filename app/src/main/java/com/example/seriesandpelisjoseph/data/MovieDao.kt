@@ -13,7 +13,7 @@ interface MovieDao {
     suspend fun getMovies(): List<MovieWithActores>
 
     @Query("SELECT count(*) from movies where idApi = :id")
-    suspend fun repetidos(id:Int) : Int
+    suspend fun repetidos(id: Int): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovie(movieEntity: MovieEntity): Long

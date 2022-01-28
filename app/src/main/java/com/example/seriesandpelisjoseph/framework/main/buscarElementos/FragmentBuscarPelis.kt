@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main
+package com.example.seriesandpelisjoseph.framework.main.buscarElementos
 
 import android.os.Bundle
 import android.view.*
@@ -12,7 +12,6 @@ import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentBuscarPelisBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
-import com.example.seriesandpelisjoseph.framework.viemodels.MainViewModel
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +42,7 @@ class FragmentBuscarPelis : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         multimediaAdapter =
-            MultimediaAdapter(binding.root.context, object : MultimediaAdapter.MultimediaActions {
+            MultimediaAdapter(object : MultimediaAdapter.MultimediaActions {
                 override fun navegar(multiMedia: MultiMedia) {
 
                     if (multiMedia.tipo.equals(Constantes.MOVIE)) {

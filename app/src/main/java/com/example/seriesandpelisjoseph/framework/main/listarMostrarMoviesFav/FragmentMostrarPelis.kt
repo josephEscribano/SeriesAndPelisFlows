@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main
+package com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,7 +12,6 @@ import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.data.model.toMovie
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarPelisBinding
 import com.example.seriesandpelisjoseph.domain.Movie
-import com.example.seriesandpelisjoseph.framework.viemodels.MovieFavViewModel
 import com.example.seriesandpelisjoseph.utils.Constantes
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -63,12 +62,20 @@ class FragmentMostrarPelis : Fragment() {
         when (menuItem.itemId) {
             R.id.favoritos -> {
                 viewmodel.repetido(movieFinal.idApi)
-                viewmodel.repetidoData.observe(this@FragmentMostrarPelis,{
-                    if (it == 0){
+                viewmodel.repetidoData.observe(this@FragmentMostrarPelis, {
+                    if (it == 0) {
                         viewmodel.insertMovie(movieFinal)
-                        Toast.makeText(this.requireContext(), Constantes.PELICULA_AÑADIDA, Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(this.requireContext(), Constantes.PELICULA_REPETIDA, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this.requireContext(),
+                            Constantes.PELICULA_AÑADIDA,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            this.requireContext(),
+                            Constantes.PELICULA_REPETIDA,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                 })

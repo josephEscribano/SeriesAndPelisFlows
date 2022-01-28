@@ -9,7 +9,7 @@ data class Capitulo(
     val idApi: Int,
     var idTemporada: Int?,
     val nombre: String,
-    val visto: Boolean,
+    var visto: Boolean,
     val numero: Int,
     var isSelected: Boolean = false
 ) : Parcelable

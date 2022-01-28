@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main
+package com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,25 +12,32 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.seriesandpelisjoseph.R
-import com.example.seriesandpelisjoseph.databinding.FragmentSeriesFavoritasBinding
+import com.example.seriesandpelisjoseph.data.model.toMovie
+import com.example.seriesandpelisjoseph.databinding.FragmentMoviesFavoritasBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
-import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
-import com.example.seriesandpelisjoseph.framework.viemodels.SeriesFavViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FragmentSeriesFavoritas : Fragment() {
-    private var _binding: FragmentSeriesFavoritasBinding? = null
+class FragmentMoviesFavoritas : Fragment() {
+    private var _binding: FragmentMoviesFavoritasBinding? = null
     private val binding get() = _binding!!
     private lateinit var multimediaAdapter: MultimediaAdapter
     private lateinit var action: NavDirections
-    private lateinit var serie: Serie
-    private val viewmodel: SeriesFavViewModel by viewModels()
+    private val viewmodel: MovieFavViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentMoviesFavoritasBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -41,42 +48,29 @@ class FragmentSeriesFavoritas : Fragment() {
         menu.findItem(R.id.favoritos).isVisible = false
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentSeriesFavoritasBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         multimediaAdapter =
-            MultimediaAdapter(binding.root.context, object : MultimediaAdapter.MultimediaActions {
+            MultimediaAdapter(object : MultimediaAdapter.MultimediaActions {
                 override fun navegar(multiMedia: MultiMedia) {
                     action =
-                        FragmentSeriesFavoritasDirections.actionFragmentSeriesFavoritasToFragmentMostrarFavRoom(
-                            multiMedia.id
+                        FragmentMoviesFavoritasDirections.actionFragmentMoviesFavoritasToFragmentMostrarPelis(
+                            multiMedia
                         )
                     findNavController().navigate(action)
                 }
 
                 override fun deleteItem(multiMedia: MultiMedia?) {
-                    viewmodel.getSerie(multiMedia?.id)
-                    viewmodel.serie.observe(this@FragmentSeriesFavoritas, {
-                        serie = it
-                        viewmodel.deleteSerie(serie)
-                    })
-
+                    viewmodel.deleteMovie(multiMedia?.toMovie())
                 }
 
             })
 
-        binding.rvSeriesFav.adapter = multimediaAdapter
+        binding.rvMoviesFav.adapter = multimediaAdapter
         val touchHelper = ItemTouchHelper(multimediaAdapter.gesto)
-        touchHelper.attachToRecyclerView(binding.rvSeriesFav)
-        viewmodel.serieData.observe(this, { multimedia ->
+        touchHelper.attachToRecyclerView(binding.rvMoviesFav)
+        viewmodel.movieData.observe(this, { multimedia ->
             multimediaAdapter.submitList(multimedia)
 
         })
@@ -84,9 +78,9 @@ class FragmentSeriesFavoritas : Fragment() {
         viewmodel.error.observe(this, {
             Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
         })
-        viewmodel.getSeries()
+
+        viewmodel.getMovies()
 
     }
-
 
 }

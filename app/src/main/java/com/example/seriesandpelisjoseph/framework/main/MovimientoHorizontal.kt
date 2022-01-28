@@ -8,7 +8,7 @@ import com.example.seriesandpelisjoseph.R
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 
-abstract class MovimientoHorizontal(context: Context) :
+abstract class MovimientoHorizontal() :
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
     override fun onMove(

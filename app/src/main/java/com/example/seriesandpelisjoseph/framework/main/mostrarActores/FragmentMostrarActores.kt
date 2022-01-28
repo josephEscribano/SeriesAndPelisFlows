@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main
+package com.example.seriesandpelisjoseph.framework.main.mostrarActores
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,7 +12,6 @@ import androidx.navigation.fragment.navArgs
 import coil.loadAny
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarActoresBinding
-import com.example.seriesandpelisjoseph.framework.viemodels.MostrarActoresViewmodel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 

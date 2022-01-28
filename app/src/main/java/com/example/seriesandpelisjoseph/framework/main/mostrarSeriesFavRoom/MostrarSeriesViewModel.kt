@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.viemodels
+package com.example.seriesandpelisjoseph.framework.main.mostrarSeriesFavRoom
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -71,31 +71,21 @@ class MostrarSeriesViewModel @Inject constructor(
         }
     }
 
-    fun repetidoSerie(id:Int){
+    fun repetidoSerie(id: Int) {
         viewModelScope.launch {
             try {
                 _repetidoData.value = repetidoSerie.invoke(id)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
                 _error.value = e.message
             }
         }
     }
 
-    //CONTEXTBAR Y MULTISELECT
-    fun seleccionaCapitulo(capitulo: Capitulo) {
-        if (isSelected(capitulo)) {
-            listaCapitulosSelected.remove(capitulo)
-        } else {
-            listaCapitulosSelected.add(capitulo)
-        }
-    }
 
     fun isSelected(capitulo: Capitulo): Boolean {
         return listaCapitulosSelected.contains(capitulo)
     }
 
-    fun getLista() = listaCapitulosSelected.toList()
 
-    fun clearList() = listaCapitulosSelected.clear()
 }

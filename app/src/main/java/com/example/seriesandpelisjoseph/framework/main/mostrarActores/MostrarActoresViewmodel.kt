@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.viemodels
+package com.example.seriesandpelisjoseph.framework.main.mostrarActores
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

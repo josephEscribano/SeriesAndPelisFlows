@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.viemodels
+package com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -33,7 +33,7 @@ class MovieFavViewModel @Inject constructor(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
-    fun getMovie() {
+    fun getMovies() {
         viewModelScope.launch {
             try {
                 _movieFavData.value = getMovies.invoke()
@@ -62,6 +62,7 @@ class MovieFavViewModel @Inject constructor(
             try {
                 if (movie != null) {
                     DeleteMovie.invoke(movie)
+                    getMovies()
                 }
             } catch (e: Exception) {
                 Log.e(Constantes.ERROR_OBTENER_MOVIE_FAV, e.message, e)
@@ -70,11 +71,11 @@ class MovieFavViewModel @Inject constructor(
         }
     }
 
-    fun repetido(id:Int){
+    fun repetido(id: Int) {
         viewModelScope.launch {
             try {
                 _repetidoData.value = repetido.invoke(id)
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e(Constantes.ERROR_OBTENER_MOVIE_FAV, e.message, e)
                 _error.value = e.message
             }

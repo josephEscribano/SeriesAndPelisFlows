@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.viemodels
+package com.example.seriesandpelisjoseph.framework.main.listarSeriesFav
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.domain.Serie
-import com.example.seriesandpelisjoseph.usecases.*
+import com.example.seriesandpelisjoseph.usecases.DeleteSerie
+import com.example.seriesandpelisjoseph.usecases.GetSerie
+import com.example.seriesandpelisjoseph.usecases.GetSeries
 import com.example.seriesandpelisjoseph.utils.Constantes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,7 +25,6 @@ class SeriesFavViewModel @Inject constructor(
 
     private val _serieFavData = MutableLiveData<List<MultiMedia>?>()
     val serieData: LiveData<List<MultiMedia>?> get() = _serieFavData
-
 
 
     private val _serie = MutableLiveData<Serie>()
@@ -48,6 +49,7 @@ class SeriesFavViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 deleteSerie.invoke(serie)
+                getSeries()
             } catch (e: Exception) {
                 Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
                 _error.value = e.message

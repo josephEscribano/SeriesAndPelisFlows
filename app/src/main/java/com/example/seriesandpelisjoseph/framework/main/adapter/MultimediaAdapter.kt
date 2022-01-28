@@ -1,7 +1,6 @@
 package com.example.seriesandpelisjoseph.framework.main.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.loadAny
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.RecyclerstylemultimediaBinding
-
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.framework.main.MovimientoHorizontal
 
 class MultimediaAdapter(
-    val context: Context,
     val actions: MultimediaActions
 ) : ListAdapter<MultiMedia, MultimediaAdapter.ItemViewHolder>(DiffCallBack()) {
 
@@ -38,7 +35,7 @@ class MultimediaAdapter(
         bind(multiMedia)
     }
 
-    val gesto = object : MovimientoHorizontal(context) {
+    val gesto = object : MovimientoHorizontal() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             when (direction) {
                 ItemTouchHelper.LEFT -> {

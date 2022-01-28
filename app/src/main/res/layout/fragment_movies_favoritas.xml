@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragmentMovieFav"
-    tools:context=".framework.main.FragmentMoviesFavoritas">
+    tools:context=".framework.main.listarMostrarMoviesFav.FragmentMoviesFavoritas">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMoviesFav"

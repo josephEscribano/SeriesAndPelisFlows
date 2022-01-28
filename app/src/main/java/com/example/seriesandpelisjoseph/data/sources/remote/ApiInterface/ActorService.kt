@@ -9,6 +9,6 @@ import retrofit2.http.Path
 interface ActorService {
 
     @GET(Constantes.ACTOR_PATH)
-    suspend fun getActor(@Path("id") actorId: Int): Response<ActorPojo>
+    suspend fun getActor(@Path(Constantes.ID_PARAMETER) actorId: Int): Response<ActorPojo>
 
 }

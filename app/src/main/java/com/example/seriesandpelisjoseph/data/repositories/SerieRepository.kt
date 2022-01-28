@@ -1,5 +1,6 @@
 package com.example.seriesandpelisjoseph.data.repositories
 
+import com.example.seriesandpelisjoseph.data.model.entity.CapituloEntity
 import com.example.seriesandpelisjoseph.data.model.entity.SeriesWithTemporadas
 import com.example.seriesandpelisjoseph.data.sources.remote.LocalDataSource
 import com.example.seriesandpelisjoseph.data.sources.remote.RemoteDataSource
@@ -38,7 +39,16 @@ class SerieRepository @Inject constructor(
             localDataSource.deleteSerie(seriesWithTemporadas)
         }
 
-    suspend fun repetidoSerie(id:Int) : Int = withContext(Dispatchers.IO) {
+    suspend fun repetidoSerie(id: Int): Int = withContext(Dispatchers.IO) {
         localDataSource.repetidoSerie(id)
+    }
+
+
+    suspend fun updateCapitulo(list: List<CapituloEntity>) = withContext(Dispatchers.IO) {
+        localDataSource.updateCapitulo(list)
+    }
+
+    suspend fun getCapitulos(id: Int) = withContext(Dispatchers.IO) {
+        localDataSource.getCapitulos(id)
     }
 }

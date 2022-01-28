@@ -3,8 +3,8 @@ package com.example.seriesandpelisjoseph.usecases
 import com.example.seriesandpelisjoseph.data.repositories.SerieRepository
 import javax.inject.Inject
 
-class RepetidoSerie @Inject constructor(private val serieRepository: SerieRepository){
+class RepetidoSerie @Inject constructor(private val serieRepository: SerieRepository) {
 
-    suspend fun invoke(id:Int) : Int = serieRepository.repetidoSerie(id)
+    suspend fun invoke(id: Int): Int = serieRepository.repetidoSerie(id)
 
 }

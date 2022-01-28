@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main
+package com.example.seriesandpelisjoseph.framework.main.mostrarSerieRemoto
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -14,8 +14,9 @@ import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarFavRoomBinding
 import com.example.seriesandpelisjoseph.domain.Capitulo
 import com.example.seriesandpelisjoseph.domain.Serie
+import com.example.seriesandpelisjoseph.domain.Temporada
+import com.example.seriesandpelisjoseph.framework.main.MainActivity
 import com.example.seriesandpelisjoseph.framework.main.adapter.CapsAdapterRoom
-import com.example.seriesandpelisjoseph.framework.viemodels.MostrarSeriesFavViewModel
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +28,7 @@ class FragmentMostrarFavRoom : Fragment() {
     private val binding get() = _binding!!
     private lateinit var capsAdapter: CapsAdapterRoom
     private lateinit var actionMode: ActionMode
-    private lateinit var serieFinal: Serie
+    private lateinit var temporadaSeleccionada: Temporada
     private val viewModel: MostrarSeriesFavViewModel by viewModels()
 
     private val callBack by lazy {
@@ -53,6 +54,35 @@ class FragmentMostrarFavRoom : Fragment() {
     ): View? {
         _binding = FragmentMostrarFavRoomBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    private fun configContextBar() = object : ActionMode.Callback {
+        override fun onCreateActionMode(p0: ActionMode?, menu: Menu?): Boolean {
+            requireActivity().menuInflater.inflate(R.menu.context_bar, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(p0: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.visto -> {
+                    viewModel.updateCapitulo()
+                    temporadaSeleccionada.idApi?.let { viewModel.getCapitulo(it) }
+                    Snackbar.make(binding.root, Constantes.VISTO, Snackbar.LENGTH_LONG)
+                    return true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(p0: ActionMode?) {
+            capsAdapter.resetSelectMode()
+            viewModel.clearList()
+        }
+
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -106,9 +136,9 @@ class FragmentMostrarFavRoom : Fragment() {
                             p3: Long
                         ) {
                             it?.temporadas?.get(p2)?.let { temporada ->
+                                temporadaSeleccionada = temporada
                                 viewModel.getCapitulo(
-                                    it.idApi,
-                                    temporada.seasonNumber
+                                    temporada.idApi
                                 )
                             }
                         }
@@ -143,8 +173,7 @@ class FragmentMostrarFavRoom : Fragment() {
     private fun addCaps(serie: Serie?) {
         serie?.temporadas?.forEach { temporada ->
             viewModel.getCapitulo(
-                serie.idApi,
-                temporada.seasonNumber
+                temporada.idApi
             )
         }
         viewModel.capituloData.observe(this, {
@@ -156,36 +185,6 @@ class FragmentMostrarFavRoom : Fragment() {
             }
         })
 
-        if (serie != null) {
-            serieFinal = serie
-        }
-
-    }
-
-    private fun configContextBar() = object : ActionMode.Callback {
-        override fun onCreateActionMode(p0: ActionMode?, menu: Menu?): Boolean {
-            requireActivity().menuInflater.inflate(R.menu.context_bar, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(p0: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
-                R.id.visto -> {
-                    Snackbar.make(binding.root, Constantes.VISTO, Snackbar.LENGTH_LONG)
-                    return true
-                }
-                else -> false
-            }
-        }
-
-        override fun onDestroyActionMode(p0: ActionMode?) {
-            capsAdapter.resetSelectMode()
-            viewModel.clearList()
-        }
 
     }
 
