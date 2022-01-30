@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main.mostrarSeriesFavRoom
+package com.example.seriesandpelisjoseph.framework.main.mostrarSeriesRemoto
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -24,6 +24,7 @@ class FragmentMostrarSeries : Fragment() {
     private val binding get() = _binding!!
     private lateinit var capsAdapter: CapsAdapter
     private lateinit var serieFinal: Serie
+    private var idSerie: Int = 0
     private val viewModel: MostrarSeriesViewModel by viewModels()
 
 
@@ -53,6 +54,7 @@ class FragmentMostrarSeries : Fragment() {
         val args: FragmentMostrarSeriesArgs by navArgs()
         capsAdapter = CapsAdapter()
         binding.rvCaps.adapter = capsAdapter
+        idSerie = args.serieid
         viewModel.getSerie(args.serieid)
         viewModel.serieData.observe(this, {
             with(binding) {
@@ -81,7 +83,7 @@ class FragmentMostrarSeries : Fragment() {
                             p3: Long
                         ) {
                             it?.temporadas?.get(p2)?.let { temporada ->
-                                viewModel.getCapitulo(
+                                viewModel.getCapitulos(
                                     it.idApi,
                                     temporada.seasonNumber
                                 )
@@ -103,7 +105,9 @@ class FragmentMostrarSeries : Fragment() {
 
                     }
 
-                addCaps(it)
+                serieFinal = it!!
+
+
             }
         })
 
@@ -117,27 +121,7 @@ class FragmentMostrarSeries : Fragment() {
 
     }
 
-    private fun addCaps(serie: Serie?) {
-        serie?.temporadas?.forEach { temporada ->
-            viewModel.getCapitulo(
-                serie.idApi,
-                temporada.seasonNumber
-            )
-        }
-        viewModel.capituloData.observe(this, {
-            serie?.temporadas?.map { temporada ->
-                if (it != null) {
-                    temporada.capitulos = it
-                    temporada.capitulos?.map { it.idTemporada = temporada.id }
-                }
-            }
-        })
 
-        if (serie != null) {
-            serieFinal = serie
-        }
-
-    }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
@@ -145,7 +129,7 @@ class FragmentMostrarSeries : Fragment() {
                 viewModel.repetidoSerie(serieFinal.idApi)
                 viewModel.repetidoData.observe(this@FragmentMostrarSeries, {
                     if (it == 0) {
-                        viewModel.insertSerie(serieFinal)
+                        viewModel.insertSerie(idSerie)
                         Toast.makeText(
                             this.requireContext(),
                             Constantes.SERIE_AÑADIDA,

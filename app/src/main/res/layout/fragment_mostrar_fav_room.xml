@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".framework.main.mostrarSerieRemoto.FragmentMostrarFavRoom">
+        tools:context=".framework.main.mostrarSerieFavRoom.FragmentMostrarFavRoom">
 
         <ImageView
             android:id="@+id/imageView"

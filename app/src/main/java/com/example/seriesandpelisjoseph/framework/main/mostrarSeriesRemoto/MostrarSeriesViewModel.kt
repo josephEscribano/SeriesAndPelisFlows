@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main.mostrarSeriesFavRoom
+package com.example.seriesandpelisjoseph.framework.main.mostrarSeriesRemoto
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -49,8 +49,9 @@ class MostrarSeriesViewModel @Inject constructor(
         }
     }
 
-    fun getCapitulo(tvId: Int, seasonNumber: Int?) {
+    fun getCapitulos(tvId: Int, seasonNumber: Int?) {
         viewModelScope.launch {
+            _capituloData.value = emptyList()
             val result = seasonNumber?.let { serieRepository.getCapitulos(tvId, it) }
             when (result) {
                 is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
@@ -59,11 +60,27 @@ class MostrarSeriesViewModel @Inject constructor(
         }
     }
 
-    fun insertSerie(serie: Serie) {
+    fun insertSerie(idserie: Int) {
         viewModelScope.launch {
-
+            val result = serieRepository.getSerie(idserie)
+            var serie : Serie? = null
+            when (result) {
+                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
+                is NetworkResult.Succcess -> serie = result.data!!
+            }
+            if (serie != null){
+                serie.temporadas?.map {
+                    val resultCapitulos = serieRepository.getCapitulos(idserie,it.seasonNumber!!)
+                    when(resultCapitulos){
+                        is NetworkResult.Error -> _error.value = resultCapitulos.message ?: Constantes.ERROR
+                        is NetworkResult.Succcess -> it.capitulos = resultCapitulos.data
+                    }
+                }
+            }
             try {
-                insertSerie.invoke(serie)
+                if (serie != null) {
+                    insertSerie.invoke(serie)
+                }
             } catch (e: Exception) {
                 Log.e(Constantes.ERROR_INSERTAR, e.message, e)
             }

@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main.mostrarSerieRemoto
+package com.example.seriesandpelisjoseph.framework.main.mostrarSerieFavRoom
 
 import android.util.Log
 import androidx.lifecycle.LiveData

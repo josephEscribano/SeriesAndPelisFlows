@@ -1,4 +1,4 @@
-package com.example.seriesandpelisjoseph.framework.main.mostrarSerieRemoto
+package com.example.seriesandpelisjoseph.framework.main.mostrarSerieFavRoom
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -158,7 +158,7 @@ class FragmentMostrarFavRoom : Fragment() {
 
                     }
 
-                addCaps(it)
+//                addCaps(it)
             }
         })
 
@@ -170,23 +170,23 @@ class FragmentMostrarFavRoom : Fragment() {
         })
     }
 
-    private fun addCaps(serie: Serie?) {
-        serie?.temporadas?.forEach { temporada ->
-            viewModel.getCapitulo(
-                temporada.idApi
-            )
-        }
-        viewModel.capituloData.observe(this, {
-            serie?.temporadas?.map { temporada ->
-                if (it != null) {
-                    temporada.capitulos = it
-                    temporada.capitulos?.map { it.idTemporada = temporada.id }
-                }
-            }
-        })
-
-
-    }
+//    private fun addCaps(serie: Serie?) {
+//        serie?.temporadas?.forEach { temporada ->
+//            viewModel.getCapitulo(
+//                temporada.idApi
+//            )
+//        }
+//        viewModel.capituloData.observe(this, {
+//            serie?.temporadas?.map { temporada ->
+//                if (it != null) {
+//                    temporada.capitulos = it
+//                    temporada.capitulos?.map { it.idTemporada = temporada.id }
+//                }
+//            }
+//        })
+//
+//
+//    }
 
 
 }

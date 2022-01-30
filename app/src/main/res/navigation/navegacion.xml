@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentMostrarSeries"
-        android:name="com.example.seriesandpelisjoseph.framework.main.mostrarSeriesFavRoom.FragmentMostrarSeries"
+        android:name="com.example.seriesandpelisjoseph.framework.main.mostrarSeriesRemoto.FragmentMostrarSeries"
         android:label="fragment_mostrar_series">
         <argument
             android:name="serieid"
@@ -77,7 +77,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentMostrarFavRoom"
-        android:name="com.example.seriesandpelisjoseph.framework.main.mostrarSerieRemoto.FragmentMostrarFavRoom"
+        android:name="com.example.seriesandpelisjoseph.framework.main.mostrarSerieFavRoom.FragmentMostrarFavRoom"
         android:label="fragment_mostrar_fav_room">
         <argument
             android:name="idSerie"
