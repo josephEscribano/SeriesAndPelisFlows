@@ -61,24 +61,30 @@ class FragmentMostrarPelis : Fragment() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.favoritos -> {
-                viewmodel.repetido(movieFinal.idApi)
-                viewmodel.repetidoData.observe(this@FragmentMostrarPelis, {
-                    if (it == 0) {
-                        viewmodel.insertMovie(movieFinal)
+                viewmodel.insertMovie(movieFinal)
                         Toast.makeText(
                             this.requireContext(),
                             Constantes.PELICULA_AÑADIDA,
                             Toast.LENGTH_SHORT
                         ).show()
-                    } else {
-                        Toast.makeText(
-                            this.requireContext(),
-                            Constantes.PELICULA_REPETIDA,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-                })
+//                viewmodel.repetido(movieFinal.idApi)
+//                viewmodel.repetidoData.observe(this@FragmentMostrarPelis, {
+//                    if (it == 0) {
+//                        viewmodel.insertMovie(movieFinal)
+//                        Toast.makeText(
+//                            this.requireContext(),
+//                            Constantes.PELICULA_AÑADIDA,
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    } else {
+//                        Toast.makeText(
+//                            this.requireContext(),
+//                            Constantes.PELICULA_REPETIDA,
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//
+//                })
 
 
                 true

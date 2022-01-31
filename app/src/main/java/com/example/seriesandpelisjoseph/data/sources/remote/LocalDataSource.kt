@@ -6,6 +6,7 @@ import com.example.seriesandpelisjoseph.data.model.entity.CapituloEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieWithActores
 import com.example.seriesandpelisjoseph.data.model.entity.SeriesWithTemporadas
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
@@ -26,7 +27,9 @@ class LocalDataSource @Inject constructor(
 
     //MOVIE
     suspend fun repetido(id: Int): Int = movieDao.repetidos(id)
-    suspend fun getMovies(): List<MovieWithActores> = movieDao.getMovies()
+
+    fun getMovies(): Flow<List<MovieWithActores>> = movieDao.getMovies()
+
     suspend fun insertMovie(movieWithActores: MovieWithActores) =
         movieDao.insertMovieWithActores(movieWithActores)
 

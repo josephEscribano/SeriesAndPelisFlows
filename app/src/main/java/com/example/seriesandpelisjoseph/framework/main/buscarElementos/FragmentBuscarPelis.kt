@@ -2,9 +2,13 @@ package com.example.seriesandpelisjoseph.framework.main.buscarElementos
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,8 +17,9 @@ import com.example.seriesandpelisjoseph.databinding.FragmentBuscarPelisBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
 import com.example.seriesandpelisjoseph.utils.Constantes
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FragmentBuscarPelis : Fragment() {
@@ -24,7 +29,7 @@ class FragmentBuscarPelis : Fragment() {
     private lateinit var action: NavDirections
     private lateinit var multimediaAdapter: MultimediaAdapter
 
-    private val viewModel: MainViewModel by viewModels()
+    private val viewmodel: MainViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,15 +79,33 @@ class FragmentBuscarPelis : Fragment() {
         binding.rvMovies.layoutManager = GridLayoutManager(this.context, 2)
         binding.rvMovies.adapter = multimediaAdapter
 
-        viewModel.multiMedia.observe(this, { multimedia ->
-            multimediaAdapter.submitList(multimedia)
-        })
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.multiMedia.collect { value ->
+                    binding.loading.visibility =
+                    if (value.isLoading){
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                    multimediaAdapter.submitList(value.multimedia)
+//                    value.error.let{
+//                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+//                    }
 
-        viewModel.error.observe(this, {
-            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
-        })
+                }
+            }
+        }
 
-        viewModel.getPopularMovies()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.error.collect {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        viewmodel.handleEvent(BuscarPelisContract.Event.getPopularMovies)
 
     }
 
@@ -90,7 +113,7 @@ class FragmentBuscarPelis : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentBuscarPelisBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -105,7 +128,7 @@ class FragmentBuscarPelis : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    viewModel.getMultiSearch(it)
+                    viewmodel.handleEvent(BuscarPelisContract.Event.getMultiSearch(it,getString(R.string.all)))
                 }
 
                 return false
@@ -117,12 +140,12 @@ class FragmentBuscarPelis : Fragment() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.pelis -> {
-                viewModel.getPopularMovies()
+                viewmodel.handleEvent(BuscarPelisContract.Event.getPopularMovies)
                 true
             }
 
             R.id.series -> {
-                viewModel.getPopularSeries()
+                viewmodel.handleEvent(BuscarPelisContract.Event.getPopularSeries)
                 true
             }
             else -> false

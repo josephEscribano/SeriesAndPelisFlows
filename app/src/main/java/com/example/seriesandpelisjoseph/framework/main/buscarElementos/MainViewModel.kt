@@ -5,11 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.seriesandpelisjoseph.R
+import com.example.seriesandpelisjoseph.framework.main.buscarElementos.BuscarPelisContract.StateBuscarPelis
 import com.example.seriesandpelisjoseph.data.repositories.MultimediaRepository
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,45 +20,109 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val multimediaRepository: MultimediaRepository) :
     ViewModel() {
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> get() = _error
+    private val _error = Channel<String>()
+    val error= _error.receiveAsFlow()
 
-    private val _multimedia = MutableLiveData<List<MultiMedia>?>()
-    val multiMedia: LiveData<List<MultiMedia>?> get() = _multimedia
+    private val _multimedia : MutableStateFlow<StateBuscarPelis> by lazy {
+        MutableStateFlow(StateBuscarPelis())
+    }
+    val multiMedia: StateFlow<StateBuscarPelis> = _multimedia
 
 
-    fun getPopularMovies() {
-        viewModelScope.launch {
-            val result = multimediaRepository.getPopularMovies()
-            when (result) {
-                is NetworkResult.Succcess -> _multimedia.value = result.data
-                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
+    fun handleEvent(event: BuscarPelisContract.Event){
+        when(event){
+
+            is BuscarPelisContract.Event.getMultiSearch -> {
+                viewModelScope.launch {
+                    multimediaRepository.getAll(event.titulo, event.region).catch(action = {
+                        cause -> _error.send(cause.message ?: Constantes.ERROR)
+                    }).collect { result ->
+                        when(result){
+                            is NetworkResult.Error -> {
+                                _multimedia.update { it.copy(error = result.message) }
+                            }
+                            is NetworkResult.Loading -> _multimedia.update { it.copy(isLoading = true) }
+                            is NetworkResult.Succcess -> _multimedia.update {
+                                it.copy(
+                                    multimedia = result.data ?: emptyList(),isLoading = false
+                                )
+                            }
+                        }
+                    }
+                }
             }
-
+            is BuscarPelisContract.Event.getPopularMovies ->{
+                viewModelScope.launch {
+                    multimediaRepository.getPopularMovies().catch(action = {
+                            cause -> _error.send(cause.message ?: Constantes.ERROR)
+                    }).collect { result ->
+                        when(result){
+                            is NetworkResult.Error -> {
+                                _multimedia.update { it.copy(error = result.message) }
+                            }
+                            is NetworkResult.Loading -> _multimedia.update { it.copy(isLoading = true) }
+                            is NetworkResult.Succcess -> _multimedia.update {
+                                it.copy(
+                                    multimedia = result.data ?: emptyList(),isLoading = false
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            is BuscarPelisContract.Event.getPopularSeries -> {
+                viewModelScope.launch {
+                    multimediaRepository.getPopularSeries().catch(action = {
+                            cause -> _error.send(cause.message ?: Constantes.ERROR)
+                    }).collect { result ->
+                        when(result){
+                            is NetworkResult.Error -> {
+                                _multimedia.update { it.copy(error = result.message) }
+                            }
+                            is NetworkResult.Loading -> _multimedia.update { it.copy(isLoading = true) }
+                            is NetworkResult.Succcess -> _multimedia.update {
+                                it.copy(
+                                    multimedia = result.data ?: emptyList(),isLoading = false
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-
-    fun getPopularSeries() {
-        viewModelScope.launch {
-            val result = multimediaRepository.getPopularSeries()
-            when (result) {
-                is NetworkResult.Succcess -> _multimedia.value = result.data
-                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
-            }
-
-        }
-    }
-
-    fun getMultiSearch(titulo: String) {
-        viewModelScope.launch {
-            val result = multimediaRepository.getAll(titulo, R.string.all.toString())
-
-            when (result) {
-                is NetworkResult.Succcess -> _multimedia.value = result.data
-                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
-            }
-
-
-        }
-    }
+//    fun getPopularMovies() {
+//        viewModelScope.launch {
+//            val result = multimediaRepository.getPopularMovies()
+//            when (result) {
+//                is NetworkResult.Succcess -> _multimedia.value = result.data
+//                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
+//            }
+//
+//        }
+//    }
+//
+//    fun getPopularSeries() {
+//        viewModelScope.launch {
+//            val result = multimediaRepository.getPopularSeries()
+//            when (result) {
+//                is NetworkResult.Succcess -> _multimedia.value = result.data
+//                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
+//            }
+//
+//        }
+//    }
+//
+//    fun getMultiSearch(titulo: String) {
+//        viewModelScope.launch {
+//            val result = multimediaRepository.getAll(titulo, R.string.all.toString())
+//
+//            when (result) {
+//                is NetworkResult.Succcess -> _multimedia.value = result.data
+//                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
+//            }
+//
+//
+//        }
+//    }
 }

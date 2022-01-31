@@ -4,13 +4,14 @@ import androidx.room.*
 import com.example.seriesandpelisjoseph.data.model.entity.ActorEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieWithActores
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MovieDao {
 
     @Transaction
     @Query("SELECT * FROM movies")
-    suspend fun getMovies(): List<MovieWithActores>
+    fun getMovies(): Flow<List<MovieWithActores>>
 
     @Query("SELECT count(*) from movies where idApi = :id")
     suspend fun repetidos(id: Int): Int

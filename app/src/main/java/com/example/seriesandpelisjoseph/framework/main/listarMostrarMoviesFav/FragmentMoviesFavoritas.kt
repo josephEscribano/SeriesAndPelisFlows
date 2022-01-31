@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -16,7 +19,10 @@ import com.example.seriesandpelisjoseph.data.model.toMovie
 import com.example.seriesandpelisjoseph.databinding.FragmentMoviesFavoritasBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
+import com.example.seriesandpelisjoseph.framework.main.buscarElementos.BuscarPelisContract
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FragmentMoviesFavoritas : Fragment() {
@@ -62,7 +68,7 @@ class FragmentMoviesFavoritas : Fragment() {
                 }
 
                 override fun deleteItem(multiMedia: MultiMedia?) {
-                    viewmodel.deleteMovie(multiMedia?.toMovie())
+//                    viewmodel.deleteMovie(multiMedia?.toMovie())
                 }
 
             })
@@ -70,16 +76,23 @@ class FragmentMoviesFavoritas : Fragment() {
         binding.rvMoviesFav.adapter = multimediaAdapter
         val touchHelper = ItemTouchHelper(multimediaAdapter.gesto)
         touchHelper.attachToRecyclerView(binding.rvMoviesFav)
-        viewmodel.movieData.observe(this, { multimedia ->
-            multimediaAdapter.submitList(multimedia)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.uiState.collect { value ->
+                    multimediaAdapter.submitList(value.multimedia)
 
-        })
+                }
+            }
+        }
 
-        viewmodel.error.observe(this, {
-            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
-        })
-
-        viewmodel.getMovies()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.error.collect {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        viewmodel.handleEvent(ListarMostrarMoviesContract.Event.getMovies)
 
     }
 
