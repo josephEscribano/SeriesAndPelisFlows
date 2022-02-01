@@ -13,11 +13,11 @@ class LocalDataSource @Inject constructor(
     private val serieDao: SerieDao, private val movieDao: MovieDao
 ) {
     //SERIE
-    suspend fun getSeries(): List<SeriesWithTemporadas> = serieDao.getSeries()
+    fun getSeries(): Flow<List<SeriesWithTemporadas>> = serieDao.getSeries()
     suspend fun insertSerie(seriesWithTemporadas: SeriesWithTemporadas) =
         serieDao.insertSerieWithTemporadasAndCapitulos(seriesWithTemporadas)
 
-    suspend fun getSerie(id: Int): SeriesWithTemporadas = serieDao.getSerie(id)
+     fun getSerie(id: Int): Flow<SeriesWithTemporadas> = serieDao.getSerie(id)
     suspend fun deleteSerie(seriesWithTemporadas: SeriesWithTemporadas) =
         serieDao.deleteSerieTodo(seriesWithTemporadas)
 
@@ -26,7 +26,7 @@ class LocalDataSource @Inject constructor(
     suspend fun getCapitulos(id: Int) = serieDao.getCapitulos(id)
 
     //MOVIE
-    suspend fun repetido(id: Int): Int = movieDao.repetidos(id)
+    fun repetido(id: Int): Flow<Int> = movieDao.repetidos(id)
 
     fun getMovies(): Flow<List<MovieWithActores>> = movieDao.getMovies()
 

@@ -108,7 +108,7 @@ class FragmentMostrarFavRoom : Fragment() {
         })
 
         binding.rvCaps.adapter = capsAdapter
-        viewModel.getSerie(args.idSerie)
+//        viewModel.getSerie(args.idSerie)
         viewModel.serieData.observe(this, {
             with(binding) {
                 imageView.loadAny(it?.imagen?.let { getString(R.string.pathImage) + it }

@@ -6,6 +6,9 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import coil.loadAny
 import com.example.seriesandpelisjoseph.R
@@ -14,6 +17,8 @@ import com.example.seriesandpelisjoseph.databinding.FragmentMostrarPelisBinding
 import com.example.seriesandpelisjoseph.domain.Movie
 import com.example.seriesandpelisjoseph.utils.Constantes
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -61,30 +66,33 @@ class FragmentMostrarPelis : Fragment() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.favoritos -> {
-                viewmodel.insertMovie(movieFinal)
-                        Toast.makeText(
-                            this.requireContext(),
-                            Constantes.PELICULA_AÑADIDA,
-                            Toast.LENGTH_SHORT
-                        ).show()
-//                viewmodel.repetido(movieFinal.idApi)
-//                viewmodel.repetidoData.observe(this@FragmentMostrarPelis, {
-//                    if (it == 0) {
-//                        viewmodel.insertMovie(movieFinal)
-//                        Toast.makeText(
-//                            this.requireContext(),
-//                            Constantes.PELICULA_AÑADIDA,
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    } else {
-//                        Toast.makeText(
-//                            this.requireContext(),
-//                            Constantes.PELICULA_REPETIDA,
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//
-//                })
+
+                viewmodel.handleEvent(ListarMostrarMoviesContract.Event.repetido(movieFinal.idApi))
+                lifecycleScope.launch {
+                    var entrar = true
+                    repeatOnLifecycle(Lifecycle.State.STARTED){
+                        viewmodel.uiState.collect {
+                            //No entendia porque colectaba 3 veces y he usado un boolean para controlar cuando y donde entra
+                            if (it.respetido == 0) {
+                                viewmodel.handleEvent(ListarMostrarMoviesContract.Event.insertMovie(movieFinal))
+                                Toast.makeText(
+                                    context,
+                                    Constantes.PELICULA_AÑADIDA,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                entrar = false
+                            } else if (it.respetido > 0 && entrar){
+
+                                Toast.makeText(
+                                    context,
+                                    Constantes.PELICULA_REPETIDA,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+
 
 
                 true

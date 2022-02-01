@@ -89,9 +89,6 @@ class FragmentBuscarPelis : Fragment() {
                         View.GONE
                     }
                     multimediaAdapter.submitList(value.multimedia)
-//                    value.error.let{
-//                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-//                    }
 
                 }
             }

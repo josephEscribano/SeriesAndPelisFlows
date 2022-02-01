@@ -37,17 +37,17 @@ class MostrarSeriesViewModel @Inject constructor(
     val repetidoData: LiveData<Int> get() = _repetidoData
 
 
-    fun getSerie(tvId: Int) {
-        viewModelScope.launch {
-            val result = serieRepository.getSerie(tvId)
-
-            when (result) {
-                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
-                is NetworkResult.Succcess -> _serieData.value = result.data
-            }
-
-        }
-    }
+//    fun getSerie(tvId: Int) {
+//        viewModelScope.launch {
+//            val result = serieRepository.getSerie(tvId)
+//
+//            when (result) {
+//                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
+//                is NetworkResult.Succcess -> _serieData.value = result.data
+//            }
+//
+//        }
+//    }
 
     fun getCapitulos(tvId: Int, seasonNumber: Int?) {
         viewModelScope.launch {
@@ -60,49 +60,49 @@ class MostrarSeriesViewModel @Inject constructor(
         }
     }
 
-    fun insertSerie(idserie: Int) {
-        viewModelScope.launch {
-            val result = serieRepository.getSerie(idserie)
-            var serie : Serie? = null
-            when (result) {
-                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
-                is NetworkResult.Succcess -> serie = result.data!!
-            }
-            if (serie != null){
-                serie.temporadas?.map {
-                    val resultCapitulos = serieRepository.getCapitulos(idserie,it.seasonNumber!!)
-                    when(resultCapitulos){
-                        is NetworkResult.Error -> _error.value = resultCapitulos.message ?: Constantes.ERROR
-                        is NetworkResult.Succcess -> it.capitulos = resultCapitulos.data
-                    }
-                }
-            }
-            try {
-                if (serie != null) {
-                    insertSerie.invoke(serie)
-                }
-            } catch (e: Exception) {
-                Log.e(Constantes.ERROR_INSERTAR, e.message, e)
-            }
-
-        }
-    }
-
-    fun repetidoSerie(id: Int) {
-        viewModelScope.launch {
-            try {
-                _repetidoData.value = repetidoSerie.invoke(id)
-            } catch (e: Exception) {
-                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
-                _error.value = e.message
-            }
-        }
-    }
-
-
-    fun isSelected(capitulo: Capitulo): Boolean {
-        return listaCapitulosSelected.contains(capitulo)
-    }
+//    fun insertSerie(idserie: Int) {
+//        viewModelScope.launch {
+//            val result = serieRepository.getSerie(idserie)
+//            var serie : Serie? = null
+//            when (result) {
+//                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
+//                is NetworkResult.Succcess -> serie = result.data!!
+//            }
+//            if (serie != null){
+//                serie.temporadas?.map {
+//                    val resultCapitulos = serieRepository.getCapitulos(idserie,it.seasonNumber!!)
+//                    when(resultCapitulos){
+//                        is NetworkResult.Error -> _error.value = resultCapitulos.message ?: Constantes.ERROR
+//                        is NetworkResult.Succcess -> it.capitulos = resultCapitulos.data
+//                    }
+//                }
+//            }
+//            try {
+//                if (serie != null) {
+//                    insertSerie.invoke(serie)
+//                }
+//            } catch (e: Exception) {
+//                Log.e(Constantes.ERROR_INSERTAR, e.message, e)
+//            }
+//
+//        }
+//    }
+//
+//    fun repetidoSerie(id: Int) {
+//        viewModelScope.launch {
+//            try {
+//                _repetidoData.value = repetidoSerie.invoke(id)
+//            } catch (e: Exception) {
+//                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
+//                _error.value = e.message
+//            }
+//        }
+//    }
+//
+//
+//    fun isSelected(capitulo: Capitulo): Boolean {
+//        return listaCapitulosSelected.contains(capitulo)
+//    }
 
 
 }

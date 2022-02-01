@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,6 +20,8 @@ import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FragmentSeriesFavoritas : Fragment() {
@@ -62,11 +67,19 @@ class FragmentSeriesFavoritas : Fragment() {
                 }
 
                 override fun deleteItem(multiMedia: MultiMedia?) {
-                    viewmodel.getSerie(multiMedia?.id)
-                    viewmodel.serie.observe(this@FragmentSeriesFavoritas, {
-                        serie = it
-                        viewmodel.deleteSerie(serie)
-                    })
+                    viewmodel.handleEvent(ListarSeriesFavContract.Event.getSerie(multiMedia?.id))
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.STARTED){
+                            viewmodel.uiState.collect {
+                                it.serie?.let { serie ->
+                                    ListarSeriesFavContract.Event.deleteSerie(
+                                        serie
+                                    )
+                                }?.let { deleteSerie ->  viewmodel.handleEvent(deleteSerie) }
+                            }
+                        }
+                    }
+
 
                 }
 
@@ -75,15 +88,23 @@ class FragmentSeriesFavoritas : Fragment() {
         binding.rvSeriesFav.adapter = multimediaAdapter
         val touchHelper = ItemTouchHelper(multimediaAdapter.gesto)
         touchHelper.attachToRecyclerView(binding.rvSeriesFav)
-        viewmodel.serieData.observe(this, { multimedia ->
-            multimediaAdapter.submitList(multimedia)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewmodel.uiState.collect{ values ->
+                    multimediaAdapter.submitList(values.multimedia)
+                }
+            }
+        }
 
-        })
 
-        viewmodel.error.observe(this, {
-            Toast.makeText(this.requireContext(), it, Toast.LENGTH_SHORT).show()
-        })
-        viewmodel.getSeries()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.error.collect {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        viewmodel.handleEvent(ListarSeriesFavContract.Event.getSeries)
 
     }
 

@@ -7,5 +7,5 @@ import javax.inject.Inject
 
 class InsertMovie @Inject constructor(private val movieRepository: MovieRepository) {
 
-    suspend fun invoke(movie: Movie) = movieRepository.insertMovie(movie.toMovieWithActores())
+//    suspend fun invoke(movie: Movie) = movieRepository.insertMovie(movie.toMovieWithActores())
 }

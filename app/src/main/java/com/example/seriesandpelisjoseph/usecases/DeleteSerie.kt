@@ -7,5 +7,5 @@ import javax.inject.Inject
 
 class DeleteSerie @Inject constructor(private val serieRepository: SerieRepository) {
 
-    suspend fun invoke(serie: Serie) = serieRepository.deleteSerie(serie.toSerieWithTemporadas())
+//    suspend fun invoke(serie: Serie) = serieRepository.deleteSerie(serie.toSerieWithTemporadas())
 }

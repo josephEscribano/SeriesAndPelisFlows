@@ -6,5 +6,5 @@ import com.example.seriesandpelisjoseph.domain.Serie
 import javax.inject.Inject
 
 class GetSerie @Inject constructor(private val serieRepository: SerieRepository) {
-    suspend fun invoke(id: Int): Serie = serieRepository.getSerieRoom(id).toSerie()
+//    suspend fun invoke(id: Int): Serie = serieRepository.getSerieRoom(id).toSerie()
 }

@@ -7,5 +7,5 @@ import javax.inject.Inject
 
 class DeleteMovie @Inject constructor(private val movieRepository: MovieRepository) {
 
-    suspend fun invoke(movie: Movie) = movieRepository.deleteMovie(movie.toMovieEntity())
+//    suspend fun invoke(movie: Movie) = movieRepository.deleteMovie(movie.toMovieEntity())
 }

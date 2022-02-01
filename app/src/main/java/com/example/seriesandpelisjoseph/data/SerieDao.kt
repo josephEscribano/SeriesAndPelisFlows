@@ -5,13 +5,14 @@ import com.example.seriesandpelisjoseph.data.model.entity.CapituloEntity
 import com.example.seriesandpelisjoseph.data.model.entity.SerieEntity
 import com.example.seriesandpelisjoseph.data.model.entity.SeriesWithTemporadas
 import com.example.seriesandpelisjoseph.data.model.entity.TemporadaEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SerieDao {
 
     @Transaction
     @Query("SELECT * FROM series")
-    suspend fun getSeries(): List<SeriesWithTemporadas>
+    fun getSeries(): Flow<List<SeriesWithTemporadas>>
 
     @Query("SELECT * FROM CAPITULOS where temporadaId = (select idTemporada from temporadas where idApi = :id) ")
     suspend fun getCapitulos(id: Int): List<CapituloEntity>
@@ -21,7 +22,7 @@ interface SerieDao {
 
     @Transaction
     @Query("SELECT  * FROM series where idSerie = :id")
-    suspend fun getSerie(id: Int): SeriesWithTemporadas
+    fun getSerie(id: Int): Flow<SeriesWithTemporadas>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSerie(serie: SerieEntity): Long

@@ -34,17 +34,17 @@ class MostrarSeriesFavViewModel @Inject constructor(
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
-    fun getSerie(id: Int?) {
-        viewModelScope.launch {
-            try {
-                _serieData.value = id?.let { getSerie.invoke(it) }
-            } catch (e: Exception) {
-                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
-                _error.value = e.message
-            }
-
-        }
-    }
+//    fun getSerie(id: Int?) {
+//        viewModelScope.launch {
+//            try {
+//                _serieData.value = id?.let { getSerie.invoke(it) }
+//            } catch (e: Exception) {
+//                Log.e(Constantes.ERROR_OBTENER_FAV, e.message, e)
+//                _error.value = e.message
+//            }
+//
+//        }
+//    }
 
     fun getCapitulo(idTemporada: Int?) {
         viewModelScope.launch {

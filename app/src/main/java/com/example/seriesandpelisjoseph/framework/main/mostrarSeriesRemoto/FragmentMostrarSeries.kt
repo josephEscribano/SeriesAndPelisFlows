@@ -55,7 +55,7 @@ class FragmentMostrarSeries : Fragment() {
         capsAdapter = CapsAdapter()
         binding.rvCaps.adapter = capsAdapter
         idSerie = args.serieid
-        viewModel.getSerie(args.serieid)
+//        viewModel.getSerie(args.serieid)
         viewModel.serieData.observe(this, {
             with(binding) {
                 imageView.loadAny(it?.imagen?.let { getString(R.string.pathImage) + it }
@@ -126,23 +126,23 @@ class FragmentMostrarSeries : Fragment() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.favoritos -> {
-                viewModel.repetidoSerie(serieFinal.idApi)
-                viewModel.repetidoData.observe(this@FragmentMostrarSeries, {
-                    if (it == 0) {
-                        viewModel.insertSerie(idSerie)
-                        Toast.makeText(
-                            this.requireContext(),
-                            Constantes.SERIE_AÑADIDA,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            this.requireContext(),
-                            Constantes.SERIE_REPETIDA,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                })
+//                viewModel.repetidoSerie(serieFinal.idApi)
+//                viewModel.repetidoData.observe(this@FragmentMostrarSeries, {
+//                    if (it == 0) {
+//                        viewModel.insertSerie(idSerie)
+//                        Toast.makeText(
+//                            this.requireContext(),
+//                            Constantes.SERIE_AÑADIDA,
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    } else {
+//                        Toast.makeText(
+//                            this.requireContext(),
+//                            Constantes.SERIE_REPETIDA,
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                })
 
                 true
             }

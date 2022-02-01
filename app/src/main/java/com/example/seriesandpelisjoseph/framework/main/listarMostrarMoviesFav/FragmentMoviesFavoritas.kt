@@ -68,7 +68,7 @@ class FragmentMoviesFavoritas : Fragment() {
                 }
 
                 override fun deleteItem(multiMedia: MultiMedia?) {
-//                    viewmodel.deleteMovie(multiMedia?.toMovie())
+                    viewmodel.handleEvent(ListarMostrarMoviesContract.Event.deleteMovie(multiMedia?.toMovie()))
                 }
 
             })
