@@ -14,7 +14,5 @@ interface ListarSeriesFavContract {
     data class StateListarSeriesFav(
         val multimedia: List<MultiMedia> = emptyList(),
         val serie: Serie? = null,
-        val isLoading: Boolean = false,
-        val error: String? = null,
     )
 }

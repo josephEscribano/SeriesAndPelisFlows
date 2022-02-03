@@ -29,7 +29,6 @@ class FragmentSeriesFavoritas : Fragment() {
     private val binding get() = _binding!!
     private lateinit var multimediaAdapter: MultimediaAdapter
     private lateinit var action: NavDirections
-    private lateinit var serie: Serie
     private val viewmodel: SeriesFavViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,15 +66,18 @@ class FragmentSeriesFavoritas : Fragment() {
                 }
 
                 override fun deleteItem(multiMedia: MultiMedia?) {
+                    var entrar = true
                     viewmodel.handleEvent(ListarSeriesFavContract.Event.getSerie(multiMedia?.id))
                     lifecycleScope.launch {
                         repeatOnLifecycle(Lifecycle.State.STARTED){
                             viewmodel.uiState.collect {
-                                it.serie?.let { serie ->
-                                    ListarSeriesFavContract.Event.deleteSerie(
-                                        serie
-                                    )
-                                }?.let { deleteSerie ->  viewmodel.handleEvent(deleteSerie) }
+                                if (entrar){
+                                    it.serie?.let { serie ->
+                                        viewmodel.handleEvent(ListarSeriesFavContract.Event.deleteSerie(serie))
+                                        entrar = false
+                                    }
+                                }
+
                             }
                         }
                     }

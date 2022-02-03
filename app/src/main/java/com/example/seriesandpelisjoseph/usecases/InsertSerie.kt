@@ -8,5 +8,5 @@ import javax.inject.Inject
 
 class InsertSerie @Inject constructor(private val serieRepository: SerieRepository) {
 
-    suspend fun invoke(serie: Serie) = serieRepository.insertSerie(serie.toSerieWithTemporadas())
+//    suspend fun invoke(serie: Serie) = serieRepository.insertSerie(serie.toSerieWithTemporadas())
 }

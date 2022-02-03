@@ -72,8 +72,7 @@ class FragmentMostrarPelis : Fragment() {
                     var entrar = true
                     repeatOnLifecycle(Lifecycle.State.STARTED){
                         viewmodel.uiState.collect {
-                            //No entendia porque colectaba 3 veces y he usado un boolean para controlar cuando y donde entra
-                            if (it.respetido == 0) {
+                            if (it.repetido == 0) {
                                 viewmodel.handleEvent(ListarMostrarMoviesContract.Event.insertMovie(movieFinal))
                                 Toast.makeText(
                                     context,
@@ -81,7 +80,7 @@ class FragmentMostrarPelis : Fragment() {
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 entrar = false
-                            } else if (it.respetido > 0 && entrar){
+                            } else if (it.repetido > 0 && entrar){
 
                                 Toast.makeText(
                                     context,

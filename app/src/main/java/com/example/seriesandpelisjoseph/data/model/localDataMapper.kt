@@ -4,6 +4,15 @@ import com.example.seriesandpelisjoseph.data.model.entity.*
 import com.example.seriesandpelisjoseph.domain.*
 import com.example.seriesandpelisjoseph.utils.Constantes
 
+//CACHE
+
+fun MultiMedia.toCachePelisEntity() : CachePelisEntity {
+    return CachePelisEntity(this.id,this.idApi,this.imagen,this.titulo)
+}
+
+fun CachePelisEntity.toMultimedia() : MultiMedia{
+    return MultiMedia(this.idCache,this.idApi,this.imagen,this.tituloPeli,null,null,Constantes.MOVIE)
+}
 //SERIES
 fun Serie.toSerieWithTemporadas(): SeriesWithTemporadas {
 

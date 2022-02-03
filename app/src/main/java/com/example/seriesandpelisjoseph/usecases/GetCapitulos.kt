@@ -5,6 +5,6 @@ import com.example.seriesandpelisjoseph.data.repositories.SerieRepository
 import javax.inject.Inject
 
 class GetCapitulos @Inject constructor(private val serieRepository: SerieRepository) {
-    suspend fun invoke(id: Int) = serieRepository.getCapitulos(id).map { it.toCapitulo() }
+//    suspend fun invoke(id: Int) = serieRepository.getCapitulosRoom(id).map { it.toCapitulo() }
 
 }

@@ -13,9 +13,8 @@ interface ListarMostrarMoviesContract {
 
     data class StateLMMovies(
         val multimedia: List<MultiMedia> = emptyList(),
-        val respetido: Int = -1,
-        val isLoading: Boolean = false,
-        val error: String? = null,
-    )
+        val repetido: Int = -1,
+
+        )
 
 }

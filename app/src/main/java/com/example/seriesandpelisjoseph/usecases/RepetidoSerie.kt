@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class RepetidoSerie @Inject constructor(private val serieRepository: SerieRepository) {
 
-    suspend fun invoke(id: Int): Int = serieRepository.repetidoSerie(id)
+//    suspend fun invoke(id: Int): Int = serieRepository.repetidoSerie(id)
 
 }

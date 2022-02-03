@@ -2,8 +2,10 @@ package com.example.seriesandpelisjoseph.data
 
 import androidx.room.*
 import com.example.seriesandpelisjoseph.data.model.entity.ActorEntity
+import com.example.seriesandpelisjoseph.data.model.entity.CachePelisEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieWithActores
+import com.example.seriesandpelisjoseph.domain.Movie
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,11 +15,17 @@ interface MovieDao {
     @Query("SELECT * FROM movies")
     fun getMovies(): Flow<List<MovieWithActores>>
 
+    @Query("SELECT * FROM cachePelis")
+    suspend fun getCache(): List<CachePelisEntity>
+
     @Query("SELECT count(*) from movies where idApi = :id")
     fun repetidos(id: Int): Flow<Int>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovie(movieEntity: MovieEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun inserCache(cachePelisEntity: CachePelisEntity)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertListActores(actores: List<ActorEntity>)
@@ -35,6 +43,16 @@ interface MovieDao {
 
     @Delete
     suspend fun deleteMovie(movieEntity: MovieEntity)
+
+    suspend fun setAllCache(cachePelisEntity: List<CachePelisEntity>){
+        cachePelisEntity.forEach {
+            deleteCache(it.idApi)
+            inserCache(it)
+        }
+    }
+
+    @Query("delete from cachePelis where idApi = :id")
+    suspend fun deleteCache(id: Int)
 
 
 }

@@ -1,8 +1,10 @@
 package com.example.seriesandpelisjoseph.framework.main.buscarElementos
 
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,11 +19,13 @@ import com.example.seriesandpelisjoseph.databinding.FragmentBuscarPelisBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
 import com.example.seriesandpelisjoseph.utils.Constantes
+import com.example.seriesandpelisjoseph.utils.InternetConnection
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
+@RequiresApi(Build.VERSION_CODES.M)
 class FragmentBuscarPelis : Fragment() {
 
     private var _binding: FragmentBuscarPelisBinding? = null
@@ -35,7 +39,9 @@ class FragmentBuscarPelis : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
     }
+
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
@@ -83,12 +89,19 @@ class FragmentBuscarPelis : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewmodel.multiMedia.collect { value ->
                     binding.loading.visibility =
-                    if (value.isLoading){
-                        View.VISIBLE
-                    } else {
-                        View.GONE
-                    }
+                        if (value.isLoading) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
                     multimediaAdapter.submitList(value.multimedia)
+
+                    value.error.let {
+                        if (it != null) {
+                            if (it.isNotEmpty())
+                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                        }
+                    }
 
                 }
             }
@@ -102,7 +115,12 @@ class FragmentBuscarPelis : Fragment() {
             }
         }
 
-        viewmodel.handleEvent(BuscarPelisContract.Event.getPopularMovies)
+        val conexion = InternetConnection.internetConnection(context)
+        if (conexion) {
+            viewmodel.handleEvent(BuscarPelisContract.Event.getPopularMovies)
+        }
+        viewmodel.handleEvent(BuscarPelisContract.Event.cachearPopulares(conexion))
+
 
     }
 
@@ -123,9 +141,18 @@ class FragmentBuscarPelis : Fragment() {
                 return false
             }
 
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    viewmodel.handleEvent(BuscarPelisContract.Event.getMultiSearch(it,getString(R.string.all)))
+                    if (it.isNotBlank()) {
+                        viewmodel.handleEvent(
+                            BuscarPelisContract.Event.getMultiSearch(
+                                it,
+                                getString(R.string.all)
+                            )
+                        )
+                    }
+
                 }
 
                 return false

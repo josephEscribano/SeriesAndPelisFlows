@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.seriesandpelisjoseph.data.repositories.MovieRepository
 import com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav.ListarMostrarMoviesContract.StateLMMovies
-import com.example.seriesandpelisjoseph.usecases.InsertMovie
 import com.example.seriesandpelisjoseph.utils.Constantes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -64,7 +63,7 @@ class MovieFavViewModel @Inject constructor(
                     movieRepository.repetido(event.id).catch { cause ->
                         _error.send(cause.message ?: Constantes.ERROR)
                     }.collect {
-                        _uiState.update { stateLMMovies ->  stateLMMovies.copy(respetido = it) }
+                        _uiState.update { stateLMMovies ->  stateLMMovies.copy(repetido = it) }
                     }
                 }
             }

@@ -15,10 +15,10 @@ interface SerieDao {
     fun getSeries(): Flow<List<SeriesWithTemporadas>>
 
     @Query("SELECT * FROM CAPITULOS where temporadaId = (select idTemporada from temporadas where idApi = :id) ")
-    suspend fun getCapitulos(id: Int): List<CapituloEntity>
+    fun getCapitulos(id: Int): Flow<List<CapituloEntity>>
 
     @Query("SELECT count(*) from series where idApi = :id")
-    suspend fun repetidosSeries(id: Int): Int
+    fun repetidosSeries(id: Int): Flow<Int>
 
     @Transaction
     @Query("SELECT  * FROM series where idSerie = :id")

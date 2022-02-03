@@ -8,15 +8,21 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import coil.loadAny
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarSeriesBinding
 import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.framework.main.adapter.CapsAdapter
+import com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav.ListarMostrarMoviesContract
 import com.example.seriesandpelisjoseph.utils.Constantes
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FragmentMostrarSeries : Fragment() {
@@ -55,69 +61,89 @@ class FragmentMostrarSeries : Fragment() {
         capsAdapter = CapsAdapter()
         binding.rvCaps.adapter = capsAdapter
         idSerie = args.serieid
-//        viewModel.getSerie(args.serieid)
-        viewModel.serieData.observe(this, {
-            with(binding) {
-                imageView.loadAny(it?.imagen?.let { getString(R.string.pathImage) + it }
-                    ?: run { this.root.context.getDrawable(R.drawable.img) })
-                tvTitulo.text = it?.tituloSerie
-                tvDescripcion.text = it?.descripcion
-                tvFecha.text = it?.fecha
-                it?.temporadas?.map { temporada -> temporada.idSerie = it.id }
-                val adapter = it?.temporadas?.let {
-                    ArrayAdapter(
-                        this.root.context, android.R.layout.simple_spinner_item,
-                        it.toList()
-                    )
-                }
+        var entrar = true
+        viewModel.handleEvent(MostrarSeriesRemotoContract.Event.getSerie(idSerie))
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.uiState.collect { value ->
+                    if (entrar){
+                        value.serie?.let {
+                            with(binding) {
+                                imageView.loadAny(it.imagen?.let { getString(R.string.pathImage) + it }
+                                    ?: run { this.root.context.getDrawable(R.drawable.img) })
+                                tvTitulo.text = it.tituloSerie
+                                tvDescripcion.text = it.descripcion
+                                tvFecha.text = it.fecha
+                                it.temporadas?.map { temporada -> temporada.idSerie = it.id }
+                                val adapter = it.temporadas?.let {
+                                    ArrayAdapter(
+                                        this.root.context, android.R.layout.simple_spinner_item,
+                                        it.toList()
+                                    )
+                                }
 
-                binding.seasonSpinner.adapter = adapter
+                                binding.seasonSpinner.adapter = adapter
 
-                binding.seasonSpinner.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener,
-                        AdapterView.OnItemClickListener {
-                        override fun onItemSelected(
-                            p0: AdapterView<*>?,
-                            p1: View?,
-                            p2: Int,
-                            p3: Long
-                        ) {
-                            it?.temporadas?.get(p2)?.let { temporada ->
-                                viewModel.getCapitulos(
-                                    it.idApi,
-                                    temporada.seasonNumber
-                                )
+                                binding.seasonSpinner.onItemSelectedListener =
+                                    object : AdapterView.OnItemSelectedListener,
+                                        AdapterView.OnItemClickListener {
+                                        override fun onItemSelected(
+                                            p0: AdapterView<*>?,
+                                            p1: View?,
+                                            p2: Int,
+                                            p3: Long
+                                        ) {
+                                            it.temporadas?.get(p2)?.let { temporada ->
+                                                viewModel.handleEvent(MostrarSeriesRemotoContract.Event.getCapitulos(it.idApi,
+                                                    temporada.seasonNumber))
+
+                                            }
+                                        }
+
+                                        override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                                        }
+
+                                        override fun onItemClick(
+                                            p0: AdapterView<*>?,
+                                            p1: View?,
+                                            p2: Int,
+                                            p3: Long
+                                        ) {
+
+                                        }
+
+                                    }
+
+                                serieFinal = it
+                                entrar = false
+
+
                             }
                         }
-
-                        override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                        }
-
-                        override fun onItemClick(
-                            p0: AdapterView<*>?,
-                            p1: View?,
-                            p2: Int,
-                            p3: Long
-                        ) {
-
-                        }
-
                     }
 
-                serieFinal = it!!
-
-
+                }
             }
-        })
+
+        }
 
 
-        viewModel.capituloData.observe(this, {
-            capsAdapter.submitList(it)
-        })
-        viewModel.error.observe(this, {
-            Snackbar.make(binding.root, it, Snackbar.LENGTH_SHORT).show()
-        })
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { value ->
+                    capsAdapter.submitList(value.capitulos)
+
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.error.collect {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
     }
 
@@ -126,23 +152,30 @@ class FragmentMostrarSeries : Fragment() {
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.favoritos -> {
-//                viewModel.repetidoSerie(serieFinal.idApi)
-//                viewModel.repetidoData.observe(this@FragmentMostrarSeries, {
-//                    if (it == 0) {
-//                        viewModel.insertSerie(idSerie)
-//                        Toast.makeText(
-//                            this.requireContext(),
-//                            Constantes.SERIE_AÑADIDA,
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    } else {
-//                        Toast.makeText(
-//                            this.requireContext(),
-//                            Constantes.SERIE_REPETIDA,
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                })
+                viewModel.handleEvent(MostrarSeriesRemotoContract.Event.repetidoSerie(serieFinal.idApi))
+                lifecycleScope.launch {
+                    var entrar = true
+                    repeatOnLifecycle(Lifecycle.State.STARTED){
+                        viewModel.uiState.collect {
+                            if (it.repetido == 0 && entrar) {
+                                viewModel.handleEvent(MostrarSeriesRemotoContract.Event.insertSerie(idSerie))
+                                Toast.makeText(
+                                    context,
+                                    Constantes.SERIE_AÑADIDA,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                entrar = false
+                            } else if (it.repetido > 0 && entrar){
+
+                                Toast.makeText(
+                                    context,
+                                    Constantes.SERIE_REPETIDA,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
 
                 true
             }
