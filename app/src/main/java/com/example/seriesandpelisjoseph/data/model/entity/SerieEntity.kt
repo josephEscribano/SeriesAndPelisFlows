@@ -10,7 +10,8 @@ data class SerieEntity(
     val idApi: Int,
     val imagen: String?,
     val tituloSerie: String,
-    val descripcion: String,
-    val fecha: String,
+    val descripcion: String?,
+    val fecha: String?,
+    val visto: Boolean?,
     val puntuacion: Int?,
 )

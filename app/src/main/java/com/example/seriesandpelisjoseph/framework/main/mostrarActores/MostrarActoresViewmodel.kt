@@ -16,29 +16,29 @@ import javax.inject.Inject
 class MostrarActoresViewmodel @Inject constructor(private val actorRepository: ActorRepository) :
     ViewModel() {
 
-    private val _actorState : MutableStateFlow<StateMostrarActores> by lazy {
+    private val _actorState: MutableStateFlow<StateMostrarActores> by lazy {
         MutableStateFlow(StateMostrarActores())
     }
     val actorData: StateFlow<StateMostrarActores> = _actorState
 
     private val _error = Channel<String>()
-    val error= _error.receiveAsFlow()
+    val error = _error.receiveAsFlow()
 
-    fun handleEvent(event: MostrarActoresContract.Event){
-        when(event){
+    fun handleEvent(event: MostrarActoresContract.Event) {
+        when (event) {
             is MostrarActoresContract.Event.getActor -> {
                 viewModelScope.launch {
-                    actorRepository.getActor(event.actorId).catch(action = {
-                            cause -> _error.send(cause.message ?: Constantes.ERROR)
+                    actorRepository.getActor(event.actorId).catch(action = { cause ->
+                        _error.send(cause.message ?: Constantes.ERROR)
                     }).collect { result ->
-                        when(result){
+                        when (result) {
                             is NetworkResult.Error -> {
                                 _actorState.update { it.copy(error = result.message) }
                             }
                             is NetworkResult.Loading -> _actorState.update { it.copy(isLoading = true) }
                             is NetworkResult.Succcess -> _actorState.update {
                                 it.copy(
-                                    actor = result.data ,isLoading = false
+                                    actor = result.data, isLoading = false
                                 )
                             }
                         }
@@ -47,14 +47,5 @@ class MostrarActoresViewmodel @Inject constructor(private val actorRepository: A
             }
         }
     }
-//    fun getActor(actorId: Int) {
-//        viewModelScope.launch {
-//            val result = actorRepository.getActor(actorId)
-//
-//            when (result) {
-//                is NetworkResult.Error -> _error.value = result.message ?: Constantes.ERROR
-//                is NetworkResult.Succcess -> _actorData.value = result.data
-//            }
-//        }
-//    }
+
 }

@@ -15,9 +15,9 @@ import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.seriesandpelisjoseph.R
+import com.example.seriesandpelisjoseph.data.model.toSerie
 import com.example.seriesandpelisjoseph.databinding.FragmentSeriesFavoritasBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
-import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -42,12 +42,13 @@ class FragmentSeriesFavoritas : Fragment() {
         menu.findItem(R.id.pelis).isVisible = false
         menu.findItem(R.id.buscar).isVisible = false
         menu.findItem(R.id.favoritos).isVisible = false
+        menu.findItem(R.id.vistoroom).isVisible = false
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSeriesFavoritasBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -60,20 +61,26 @@ class FragmentSeriesFavoritas : Fragment() {
                 override fun navegar(multiMedia: MultiMedia) {
                     action =
                         FragmentSeriesFavoritasDirections.actionFragmentSeriesFavoritasToFragmentMostrarFavRoom(
-                            multiMedia.id
+                            multiMedia.toSerie()
                         )
                     findNavController().navigate(action)
                 }
 
                 override fun deleteItem(multiMedia: MultiMedia?) {
                     var entrar = true
+
                     viewmodel.handleEvent(ListarSeriesFavContract.Event.getSerie(multiMedia?.id))
                     lifecycleScope.launch {
-                        repeatOnLifecycle(Lifecycle.State.STARTED){
+
+                        repeatOnLifecycle(Lifecycle.State.STARTED) {
                             viewmodel.uiState.collect {
-                                if (entrar){
+                                if (entrar) {
                                     it.serie?.let { serie ->
-                                        viewmodel.handleEvent(ListarSeriesFavContract.Event.deleteSerie(serie))
+                                        viewmodel.handleEvent(
+                                            ListarSeriesFavContract.Event.deleteSerie(
+                                                serie
+                                            )
+                                        )
                                         entrar = false
                                     }
                                 }
@@ -91,8 +98,8 @@ class FragmentSeriesFavoritas : Fragment() {
         val touchHelper = ItemTouchHelper(multimediaAdapter.gesto)
         touchHelper.attachToRecyclerView(binding.rvSeriesFav)
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-                viewmodel.uiState.collect{ values ->
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewmodel.uiState.collect { values ->
                     multimediaAdapter.submitList(values.multimedia)
                 }
             }

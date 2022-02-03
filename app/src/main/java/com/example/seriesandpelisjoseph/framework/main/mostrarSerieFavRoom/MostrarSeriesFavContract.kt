@@ -5,16 +5,19 @@ import com.example.seriesandpelisjoseph.domain.Serie
 
 interface MostrarSeriesFavContract {
 
-    sealed class Event{
+    sealed class Event {
         data class getSerie(val id: Int?) : Event()
-        data class getCapitulo(val idTemporada: Int?) : Event()
-        object updateCapitulo : Event()
+        data class getCapitulos(val idTemporada: Int?) : Event()
+        object updateCapitulos : Event()
+        data class updateCapitulo(val capitulo: Capitulo) : Event()
+        data class updateSerie(val serie: Serie) : Event()
+
     }
 
     data class StateMostrarSerieFav(
-        val capitulos : List<Capitulo> = emptyList(),
+        val capitulos: List<Capitulo> = emptyList(),
         val serie: Serie? = null,
-        val isLoading : Boolean = false,
+        val isLoading: Boolean = false,
         val error: String? = null
     )
 

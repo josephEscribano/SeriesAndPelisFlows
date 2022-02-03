@@ -1,11 +1,6 @@
 package com.example.seriesandpelisjoseph.data.repositories
 
-import com.example.seriesandpelisjoseph.data.model.entity.CapituloEntity
-import com.example.seriesandpelisjoseph.data.model.entity.SeriesWithTemporadas
-import com.example.seriesandpelisjoseph.data.model.toCapitulo
-import com.example.seriesandpelisjoseph.data.model.toMultimedia
-import com.example.seriesandpelisjoseph.data.model.toSerie
-import com.example.seriesandpelisjoseph.data.model.toSerieWithTemporadas
+import com.example.seriesandpelisjoseph.data.model.*
 import com.example.seriesandpelisjoseph.data.sources.remote.LocalDataSource
 import com.example.seriesandpelisjoseph.data.sources.remote.RemoteDataSource
 import com.example.seriesandpelisjoseph.domain.Capitulo
@@ -14,7 +9,6 @@ import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -28,7 +22,7 @@ class SerieRepository @Inject constructor(
     private val localDataSource: LocalDataSource
 ) {
 
-    suspend fun getSerie(tvId: Int) : Flow<NetworkResult<Serie>>{
+    suspend fun getSerie(tvId: Int): Flow<NetworkResult<Serie>> {
         return flow {
             emit(NetworkResult.Loading())
 
@@ -37,7 +31,7 @@ class SerieRepository @Inject constructor(
     }
 
 
-    fun getCapitulos(tvId: Int, seasonNumber: Int) : Flow<NetworkResult<List<Capitulo>>>{
+    fun getCapitulos(tvId: Int, seasonNumber: Int): Flow<NetworkResult<List<Capitulo>>> {
         return flow {
             emit(NetworkResult.Loading())
             emit(remoteDataSource.getCapitulos(tvId, seasonNumber))
@@ -46,11 +40,14 @@ class SerieRepository @Inject constructor(
 
 
     fun getSeries(): Flow<List<MultiMedia>> {
-        return localDataSource.getSeries().map { it.map { seriesWithTemporadas -> seriesWithTemporadas.toMultimedia()
-        } }
+        return localDataSource.getSeries().map {
+            it.map { seriesWithTemporadas ->
+                seriesWithTemporadas.toMultimedia()
+            }
+        }
     }
 
-    fun getSerieRoom(id: Int): Flow<Serie>{
+    fun getSerieRoom(id: Int): Flow<Serie> {
         return localDataSource.getSerie(id).map { it.toSerie() }
     }
 
@@ -67,12 +64,17 @@ class SerieRepository @Inject constructor(
     fun repetidoSerie(id: Int): Flow<Int> = localDataSource.repetidoSerie(id)
 
 
-
-    suspend fun updateCapitulo(list: List<CapituloEntity>) = withContext(Dispatchers.IO) {
-        localDataSource.updateCapitulo(list)
+    suspend fun updateCapitulos(list: List<Capitulo>) = withContext(Dispatchers.IO) {
+        localDataSource.updateCapitulos(list.map { it.toCapituloEntity() })
     }
 
-    fun getCapitulosRoom(id: Int) :  Flow<List<Capitulo>> =
-        localDataSource.getCapitulos(id).map { it.map { capituloEntity -> capituloEntity.toCapitulo() } }
+    suspend fun updateCapitulo(capitulo: Capitulo) =
+        localDataSource.updateCapitulo(capitulo.toCapituloEntity())
+
+    suspend fun updateSerie(serie: Serie) = localDataSource.updateSerie(serie.toSerieEntity())
+
+    fun getCapitulosRoom(id: Int): Flow<List<Capitulo>> =
+        localDataSource.getCapitulos(id)
+            .map { it.map { capituloEntity -> capituloEntity.toCapitulo() } }
 
 }

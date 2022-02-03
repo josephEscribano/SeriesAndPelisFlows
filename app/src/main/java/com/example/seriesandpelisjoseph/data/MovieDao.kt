@@ -5,7 +5,6 @@ import com.example.seriesandpelisjoseph.data.model.entity.ActorEntity
 import com.example.seriesandpelisjoseph.data.model.entity.CachePelisEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieEntity
 import com.example.seriesandpelisjoseph.data.model.entity.MovieWithActores
-import com.example.seriesandpelisjoseph.domain.Movie
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -44,7 +43,7 @@ interface MovieDao {
     @Delete
     suspend fun deleteMovie(movieEntity: MovieEntity)
 
-    suspend fun setAllCache(cachePelisEntity: List<CachePelisEntity>){
+    suspend fun setAllCache(cachePelisEntity: List<CachePelisEntity>) {
         cachePelisEntity.forEach {
             deleteCache(it.idApi)
             inserCache(it)
@@ -53,6 +52,9 @@ interface MovieDao {
 
     @Query("delete from cachePelis where idApi = :id")
     suspend fun deleteCache(id: Int)
+
+    @Update
+    suspend fun updateMovie(movieEntity: MovieEntity)
 
 
 }

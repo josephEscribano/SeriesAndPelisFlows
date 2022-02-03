@@ -46,6 +46,7 @@ class FragmentBuscarPelis : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         menu.findItem(R.id.favoritos).isVisible = false
+        menu.findItem(R.id.vistoroom).isVisible = false
 
     }
 
@@ -59,7 +60,7 @@ class FragmentBuscarPelis : Fragment() {
                     if (multiMedia.tipo.equals(Constantes.MOVIE)) {
                         action =
                             FragmentBuscarPelisDirections.actionFragmentBuscarPelisToFragmentMostrarPelis(
-                                multiMedia
+                                multiMedia, 0
                             )
                     } else if (multiMedia.tipo.equals(Constantes.TV)) {
                         action =

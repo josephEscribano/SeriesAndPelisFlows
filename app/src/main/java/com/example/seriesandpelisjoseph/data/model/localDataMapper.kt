@@ -6,13 +6,23 @@ import com.example.seriesandpelisjoseph.utils.Constantes
 
 //CACHE
 
-fun MultiMedia.toCachePelisEntity() : CachePelisEntity {
-    return CachePelisEntity(this.id,this.idApi,this.imagen,this.titulo)
+fun MultiMedia.toCachePelisEntity(): CachePelisEntity {
+    return CachePelisEntity(this.id, this.idApi, this.imagen, this.titulo)
 }
 
-fun CachePelisEntity.toMultimedia() : MultiMedia{
-    return MultiMedia(this.idCache,this.idApi,this.imagen,this.tituloPeli,null,null,Constantes.MOVIE)
+fun CachePelisEntity.toMultimedia(): MultiMedia {
+    return MultiMedia(
+        this.idCache,
+        this.idApi,
+        this.imagen,
+        this.tituloPeli,
+        null,
+        null,
+        Constantes.MOVIE,
+        null
+    )
 }
+
 //SERIES
 fun Serie.toSerieWithTemporadas(): SeriesWithTemporadas {
 
@@ -29,7 +39,7 @@ fun Temporada.toTemporadasWithCapitulos(): TemporadasWithCapitulos {
 }
 
 fun Serie.toSerieEntity(): SerieEntity {
-    return SerieEntity(id, idApi, imagen, tituloSerie, descripcion, fecha, puntuacion)
+    return SerieEntity(id, idApi, imagen, tituloSerie, descripcion, fecha, visto, puntuacion)
 }
 
 fun Temporada.toTemporadaEntity(): TemporadaEntity {
@@ -48,7 +58,8 @@ fun SeriesWithTemporadas.toMultimedia(): MultiMedia {
         this.serie.tituloSerie,
         this.serie.descripcion,
         this.serie.fecha,
-        Constantes.TV
+        Constantes.TV,
+        this.serie.visto
     )
 }
 
@@ -61,6 +72,7 @@ fun SeriesWithTemporadas.toSerie(): Serie {
         serie.descripcion,
         serie.fecha,
         serie.puntuacion,
+        null,
         temporadas?.map { it.toTemporada() },
         null
     )
@@ -101,6 +113,7 @@ fun MovieWithActores.toMultimedia(): MultiMedia {
         this.movie.tituloPeli,
         this.movie.descripcion,
         this.movie.fechaEmision,
-        Constantes.MOVIE
+        Constantes.MOVIE,
+        this.movie.visto
     )
 }

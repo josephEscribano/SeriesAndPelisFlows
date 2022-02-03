@@ -12,4 +12,5 @@ data class MultiMedia(
     val descripcion: String?,
     val fechaEmision: String?,
     val tipo: String,
+    val visto: Boolean?
 ) : Parcelable

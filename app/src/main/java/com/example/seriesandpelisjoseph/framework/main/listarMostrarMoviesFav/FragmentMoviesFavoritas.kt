@@ -19,7 +19,6 @@ import com.example.seriesandpelisjoseph.data.model.toMovie
 import com.example.seriesandpelisjoseph.databinding.FragmentMoviesFavoritasBinding
 import com.example.seriesandpelisjoseph.domain.MultiMedia
 import com.example.seriesandpelisjoseph.framework.main.adapter.MultimediaAdapter
-import com.example.seriesandpelisjoseph.framework.main.buscarElementos.BuscarPelisContract
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -52,6 +51,7 @@ class FragmentMoviesFavoritas : Fragment() {
         menu.findItem(R.id.pelis).isVisible = false
         menu.findItem(R.id.buscar).isVisible = false
         menu.findItem(R.id.favoritos).isVisible = false
+        menu.findItem(R.id.vistoroom).isVisible = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,9 +60,12 @@ class FragmentMoviesFavoritas : Fragment() {
         multimediaAdapter =
             MultimediaAdapter(object : MultimediaAdapter.MultimediaActions {
                 override fun navegar(multiMedia: MultiMedia) {
+                    //envio 1 si viene de esta pantalla y 0 si viene de la pantalla de buscarpelis
+                    //porque al compartir pantallas para mostrar de room y de retrofit necesito saber de que pantalla viene
+                    //para evitar que si viene de room me muestre el icono de marcar como visto
                     action =
                         FragmentMoviesFavoritasDirections.actionFragmentMoviesFavoritasToFragmentMostrarPelis(
-                            multiMedia
+                            multiMedia, 1
                         )
                     findNavController().navigate(action)
                 }

@@ -19,8 +19,15 @@ class LocalDataSource @Inject constructor(
         serieDao.deleteSerieTodo(seriesWithTemporadas)
 
     fun repetidoSerie(id: Int): Flow<Int> = serieDao.repetidosSeries(id)
-    suspend fun updateCapitulo(list: List<CapituloEntity>) = serieDao.updateCapitulos(list)
-    fun getCapitulos(id: Int) : Flow<List<CapituloEntity>> = serieDao.getCapitulos(id)
+
+    suspend fun updateCapitulos(list: List<CapituloEntity>) = serieDao.updateCapitulos(list)
+
+    fun getCapitulos(id: Int): Flow<List<CapituloEntity>> = serieDao.getCapitulos(id)
+
+    suspend fun updateCapitulo(capituloEntity: CapituloEntity) =
+        serieDao.updateCapitulo(capituloEntity)
+
+    suspend fun updateSerie(serieEntity: SerieEntity) = serieDao.updateSerie(serieEntity)
 
     //MOVIE
     fun repetido(id: Int): Flow<Int> = movieDao.repetidos(id)
@@ -32,10 +39,13 @@ class LocalDataSource @Inject constructor(
 
     suspend fun deleteMovie(movieEntity: MovieEntity) = movieDao.deleteMovie(movieEntity)
 
-    //CACHE
-    suspend fun getCache() : List<CachePelisEntity> = movieDao.getCache()
+    suspend fun updateMovie(movieEntity: MovieEntity) = movieDao.updateMovie(movieEntity)
 
-    suspend fun setAllCache(cachePelisEntity: List<CachePelisEntity>) = movieDao.setAllCache(cachePelisEntity)
+    //CACHE
+    suspend fun getCache(): List<CachePelisEntity> = movieDao.getCache()
+
+    suspend fun setAllCache(cachePelisEntity: List<CachePelisEntity>) =
+        movieDao.setAllCache(cachePelisEntity)
 
 
 }

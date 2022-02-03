@@ -6,9 +6,8 @@ import com.example.seriesandpelisjoseph.data.model.entity.*
 
 
 @Database(
-    entities = [ActorEntity::class, SerieEntity::class, MovieEntity::class, CapituloEntity::class
-        , TemporadaEntity::class,CachePelisEntity::class],
-    version = 29,
+    entities = [ActorEntity::class, SerieEntity::class, MovieEntity::class, CapituloEntity::class, TemporadaEntity::class, CachePelisEntity::class],
+    version = 32,
     exportSchema = true
 )
 

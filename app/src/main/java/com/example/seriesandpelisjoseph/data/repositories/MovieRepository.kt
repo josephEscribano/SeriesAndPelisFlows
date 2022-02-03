@@ -34,4 +34,6 @@ class MovieRepository @Inject constructor(
     fun repetido(id: Int): Flow<Int> {
         return localDataSource.repetido(id).flowOn(Dispatchers.IO)
     }
+
+    suspend fun updateMovie(movie: Movie) = localDataSource.updateMovie(movie.toMovieEntity())
 }

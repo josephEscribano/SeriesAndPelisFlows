@@ -62,6 +62,9 @@ interface SerieDao {
     @Update
     suspend fun updateCapitulo(capituloEntity: CapituloEntity)
 
+    @Update
+    suspend fun updateSerie(serieEntity: SerieEntity)
+
     @Delete
     suspend fun deleteSerie(serie: SerieEntity)
 

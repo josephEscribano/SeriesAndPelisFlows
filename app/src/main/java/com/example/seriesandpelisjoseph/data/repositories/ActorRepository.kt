@@ -8,12 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @ActivityRetainedScoped
 class ActorRepository @Inject constructor(private val remoteDataSource: RemoteDataSource) {
-    fun getActor(actorId: Int) : Flow<NetworkResult<Actor>>{
+    fun getActor(actorId: Int): Flow<NetworkResult<Actor>> {
         return flow {
             emit(NetworkResult.Loading())
             emit(remoteDataSource.getActor(actorId))

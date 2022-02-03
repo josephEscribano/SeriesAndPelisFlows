@@ -4,7 +4,7 @@ import com.example.seriesandpelisjoseph.domain.Actor
 
 interface MostrarActoresContract {
 
-    sealed class Event{
+    sealed class Event {
         data class getActor(val actorId: Int) : Event()
     }
 

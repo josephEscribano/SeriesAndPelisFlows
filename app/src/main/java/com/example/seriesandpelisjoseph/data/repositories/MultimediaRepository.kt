@@ -7,14 +7,12 @@ import com.example.seriesandpelisjoseph.data.model.toMultimedia
 import com.example.seriesandpelisjoseph.data.sources.remote.LocalDataSource
 import com.example.seriesandpelisjoseph.data.sources.remote.RemoteDataSource
 import com.example.seriesandpelisjoseph.domain.MultiMedia
-import com.example.seriesandpelisjoseph.utils.InternetConnection
 import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @ActivityRetainedScoped

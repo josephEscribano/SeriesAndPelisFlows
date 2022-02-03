@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.seriesandpelisjoseph.data.repositories.SerieRepository
-
 import com.example.seriesandpelisjoseph.framework.main.listarSeriesFav.ListarSeriesFavContract.StateListarSeriesFav
 import com.example.seriesandpelisjoseph.utils.Constantes
-import com.example.seriesandpelisjoseph.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -16,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeriesFavViewModel @Inject constructor(
-    private val  serieRepository: SerieRepository
+    private val serieRepository: SerieRepository
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<StateListarSeriesFav> by lazy {
@@ -29,8 +27,8 @@ class SeriesFavViewModel @Inject constructor(
     val error = _error.receiveAsFlow()
 
 
-    fun handleEvent(event: ListarSeriesFavContract.Event){
-        when(event){
+    fun handleEvent(event: ListarSeriesFavContract.Event?) {
+        when (event) {
             is ListarSeriesFavContract.Event.deleteSerie -> {
                 viewModelScope.launch {
                     try {
@@ -41,16 +39,16 @@ class SeriesFavViewModel @Inject constructor(
                     }
                 }
             }
+
+
             is ListarSeriesFavContract.Event.getSerie -> {
                 viewModelScope.launch {
-                    event.id?.let {
-                        serieRepository.getSerieRoom(it)
-                            .catch(action = { cause ->
-                                _error.send(cause.message ?: Constantes.ERROR)
-                        }).collect {
-                            _uiState.update { stateLMMovies -> stateLMMovies.copy(serie = it) }
+                    serieRepository.getSerieRoom(event.id!!)
+                        .catch(action = { cause ->
+                            Log.e(Constantes.ERROR_OBTENER_FAV, cause.message, cause)
+                        }).collect { serie ->
+                            _uiState.update { stateLMMovies -> stateLMMovies.copy(serie = serie) }
                         }
-                    }
 
                 }
             }
@@ -59,7 +57,11 @@ class SeriesFavViewModel @Inject constructor(
                     serieRepository.getSeries().catch(action = { cause ->
                         _error.send(cause.message ?: Constantes.ERROR)
                     }).collect {
-                        _uiState.update { stateListarSeriesFav -> stateListarSeriesFav.copy(multimedia = it) }
+                        _uiState.update { stateListarSeriesFav ->
+                            stateListarSeriesFav.copy(
+                                multimedia = it
+                            )
+                        }
                     }
                 }
             }

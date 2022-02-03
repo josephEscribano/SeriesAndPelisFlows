@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/fragmentBuscarPelis"
         android:name="com.example.seriesandpelisjoseph.framework.main.buscarElementos.FragmentBuscarPelis"
-        android:label="fragment_buscar_pelis"
+        android:label="NavFilms"
         tools:context=".framework.main.buscarElementos.FragmentBuscarPelis"
         tools:layout="@layout/fragment_buscar_pelis" >
         <action
@@ -29,18 +29,21 @@
     <fragment
         android:id="@+id/fragmentMostrarPelis"
         android:name="com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav.FragmentMostrarPelis"
-        android:label="fragment_mostrar_pelis" >
+        android:label="" >
         <argument
             android:name="multimedia"
             app:argType="com.example.seriesandpelisjoseph.domain.MultiMedia" />
         <action
             android:id="@+id/action_fragmentMostrarPelis_to_fragmentBuscarPelis"
             app:destination="@id/fragmentBuscarPelis" />
+        <argument
+            android:name="direccion"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/fragmentMostrarSeries"
         android:name="com.example.seriesandpelisjoseph.framework.main.mostrarSeriesRemoto.FragmentMostrarSeries"
-        android:label="fragment_mostrar_series">
+        android:label="">
         <argument
             android:name="serieid"
             app:argType="integer" />
@@ -48,7 +51,7 @@
     <fragment
         android:id="@+id/fragmentMostrarActores"
         android:name="com.example.seriesandpelisjoseph.framework.main.mostrarActores.FragmentMostrarActores"
-        android:label="fragment_mostrar_actores"
+        android:label=""
         tools:layout="@layout/fragment_mostrar_actores">
         <action
             android:id="@+id/action_fragmentMostrarActores_to_fragmentBuscarPelis"
@@ -60,7 +63,7 @@
     <fragment
         android:id="@+id/fragmentSeriesFavoritas"
         android:name="com.example.seriesandpelisjoseph.framework.main.listarSeriesFav.FragmentSeriesFavoritas"
-        android:label="fragment_series_favoritas"
+        android:label="Series Fav"
         tools:layout="@layout/fragment_series_favoritas">
         <action
             android:id="@+id/action_fragmentSeriesFavoritas_to_fragmentMostrarFavRoom"
@@ -69,7 +72,7 @@
     <fragment
         android:id="@+id/fragmentMoviesFavoritas"
         android:name="com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav.FragmentMoviesFavoritas"
-        android:label="fragment_movies_favoritas"
+        android:label="Pelis Fav"
         tools:layout="@layout/fragment_movies_favoritas">
         <action
             android:id="@+id/action_fragmentMoviesFavoritas_to_fragmentMostrarPelis"
@@ -78,9 +81,9 @@
     <fragment
         android:id="@+id/fragmentMostrarFavRoom"
         android:name="com.example.seriesandpelisjoseph.framework.main.mostrarSerieFavRoom.FragmentMostrarFavRoom"
-        android:label="fragment_mostrar_fav_room">
+        android:label="">
         <argument
-            android:name="idSerie"
-            app:argType="integer" />
+            android:name="serie"
+            app:argType="com.example.seriesandpelisjoseph.domain.Serie" />
     </fragment>
 </navigation>

@@ -1,6 +1,5 @@
 package com.example.seriesandpelisjoseph.framework.main
 
-import android.content.Context
 import android.graphics.Canvas
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -8,7 +7,7 @@ import com.example.seriesandpelisjoseph.R
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 
 
-abstract class MovimientoHorizontal() :
+abstract class MovimientoHorizontal :
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
     override fun onMove(

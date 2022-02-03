@@ -31,7 +31,8 @@ class FragmentMostrarPelis : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
+        val args: FragmentMostrarPelisArgs by navArgs()
+        movieFinal = args.multimedia.toMovie()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -39,6 +40,16 @@ class FragmentMostrarPelis : Fragment() {
         menu.findItem(R.id.series).isVisible = false
         menu.findItem(R.id.pelis).isVisible = false
         menu.findItem(R.id.buscar).isVisible = false
+        val args: FragmentMostrarPelisArgs by navArgs()
+        if (args.direccion == 0) {
+            menu.findItem(R.id.vistoroom).isVisible = false
+        } else {
+            menu.findItem(R.id.favoritos).isVisible = false
+        }
+
+        if (movieFinal.visto == true) {
+            menu.findItem(R.id.vistoroom).setIcon(R.drawable.outline_visibility_off_24)
+        }
     }
 
     override fun onCreateView(
@@ -52,35 +63,49 @@ class FragmentMostrarPelis : Fragment() {
     @SuppressLint("UseCompatLoadingForDrawables")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val args: FragmentMostrarPelisArgs by navArgs()
+
         with(binding) {
-            imageView.loadAny(args.multimedia.imagen?.let { getString(R.string.pathImage) + it }
+            imageView.loadAny(movieFinal.imagen?.let { getString(R.string.pathImage) + it }
                 ?: run { this.root.context.getDrawable(R.drawable.img) })
-            tvTitulo.text = args.multimedia.titulo
-            tvDescripcion.text = args.multimedia.descripcion
-            tvFecha.text = args.multimedia.fechaEmision
+            tvTitulo.text = movieFinal.tituloPeli
+            tvDescripcion.text = movieFinal.descripcion
+            tvFecha.text = movieFinal.fechaEmision
         }
-        movieFinal = args.multimedia.toMovie()
+
     }
 
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
+            R.id.vistoroom -> {
+                if (movieFinal.visto == true) {
+                    movieFinal.visto = false
+                    menuItem.setIcon(R.drawable.ic_baseline_remove_red_eye_24)
+                } else {
+                    movieFinal.visto = true
+                    menuItem.setIcon(R.drawable.outline_visibility_off_24)
+                }
+                viewmodel.handleEvent(ListarMostrarMoviesContract.Event.updateMovie(movieFinal))
+            }
             R.id.favoritos -> {
 
                 viewmodel.handleEvent(ListarMostrarMoviesContract.Event.repetido(movieFinal.idApi))
                 lifecycleScope.launch {
                     var entrar = true
-                    repeatOnLifecycle(Lifecycle.State.STARTED){
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
                         viewmodel.uiState.collect {
                             if (it.repetido == 0) {
-                                viewmodel.handleEvent(ListarMostrarMoviesContract.Event.insertMovie(movieFinal))
+                                viewmodel.handleEvent(
+                                    ListarMostrarMoviesContract.Event.insertMovie(
+                                        movieFinal
+                                    )
+                                )
                                 Toast.makeText(
                                     context,
                                     Constantes.PELICULA_AÑADIDA,
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 entrar = false
-                            } else if (it.repetido > 0 && entrar){
+                            } else if (it.repetido > 0 && entrar) {
 
                                 Toast.makeText(
                                     context,

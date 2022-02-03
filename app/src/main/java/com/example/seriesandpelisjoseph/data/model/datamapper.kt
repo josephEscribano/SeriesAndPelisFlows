@@ -22,7 +22,8 @@ fun ResultMultimediaPojo.toMultimedia(): MultiMedia {
             this.title,
             this.overview,
             this.firstAirDate,
-            this.mediaType
+            this.mediaType,
+            null
         )
     else if (this.mediaType == Constantes.TV)
         multiMedia = MultiMedia(
@@ -32,10 +33,12 @@ fun ResultMultimediaPojo.toMultimedia(): MultiMedia {
             this.name,
             this.overview,
             this.firstAirDate,
-            this.mediaType
+            this.mediaType,
+            null
         )
     else
-        multiMedia = MultiMedia(0, this.id, this.profilePath, this.name, null, null, this.mediaType)
+        multiMedia =
+            MultiMedia(0, this.id, this.profilePath, this.name, null, null, this.mediaType, null)
 
     return multiMedia
 }
@@ -50,7 +53,8 @@ fun ResultPopularMoviePojo.toMultimedia(): MultiMedia {
         this.title,
         this.overview,
         this.releaseDate,
-        Constantes.MOVIE
+        Constantes.MOVIE,
+        null
     )
 }
 
@@ -62,7 +66,8 @@ fun ResultPopularSeriePojo.toSerieMultimedia(): MultiMedia {
         this.name,
         this.overview,
         this.firstAirDate,
-        Constantes.TV
+        Constantes.TV,
+        null
     )
 }
 
@@ -74,6 +79,7 @@ fun SeriePojo.toSerie(): Serie {
         this.name,
         this.overview,
         this.firstAirDate,
+        null,
         null,
         this.seasonPojos.map { it.toTemporada() },
         null
@@ -93,7 +99,11 @@ fun Episode.toCapitulo(): Capitulo {
 }
 
 fun MultiMedia.toMovie(): Movie {
-    return Movie(id, idApi, imagen, titulo, false, 0, descripcion, fechaEmision, null)
+    return Movie(id, idApi, imagen, titulo, visto, 0, descripcion, fechaEmision, null)
+}
+
+fun MultiMedia.toSerie(): Serie {
+    return Serie(id, idApi, imagen, titulo, descripcion, fechaEmision, 0, visto, null, null)
 }
 
 

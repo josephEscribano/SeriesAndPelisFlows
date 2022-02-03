@@ -67,6 +67,17 @@ class MovieFavViewModel @Inject constructor(
                     }
                 }
             }
+            is ListarMostrarMoviesContract.Event.updateMovie -> {
+                viewModelScope.launch {
+                    try {
+                        movieRepository.updateMovie(event.movie)
+
+                    } catch (e: Exception) {
+                        Log.e(Constantes.ERROR_OBTENER_MOVIE_FAV, e.message, e)
+                        _error.send(e.message ?: Constantes.ERROR)
+                    }
+                }
+            }
         }
     }
 }

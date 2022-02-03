@@ -16,7 +16,6 @@ import androidx.navigation.fragment.navArgs
 import coil.loadAny
 import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarActoresBinding
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -37,6 +36,8 @@ class FragmentMostrarActores : Fragment() {
         menu.findItem(R.id.series).isVisible = false
         menu.findItem(R.id.pelis).isVisible = false
         menu.findItem(R.id.buscar).isVisible = false
+        menu.findItem(R.id.vistoroom).isVisible = false
+        menu.findItem(R.id.favoritos).isVisible = false
     }
 
     override fun onCreateView(
@@ -56,7 +57,7 @@ class FragmentMostrarActores : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewmodel.actorData.collect {
                     with(binding) {
-                        it.actor?.let {actor ->
+                        it.actor?.let { actor ->
                             imageView.loadAny(actor.imagen?.let { getString(R.string.pathImage) + it }
                                 ?: run { this.root.context.getDrawable(R.drawable.img) })
                             tvNombre.text = actor.nombre

@@ -5,7 +5,7 @@ import com.example.seriesandpelisjoseph.domain.Serie
 
 interface ListarSeriesFavContract {
 
-    sealed class Event{
+    sealed class Event {
         object getSeries : Event()
         data class deleteSerie(val serie: Serie) : Event()
         data class getSerie(val id: Int?) : Event()

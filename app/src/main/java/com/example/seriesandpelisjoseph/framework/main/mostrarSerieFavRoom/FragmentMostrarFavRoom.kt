@@ -18,7 +18,7 @@ import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarFavRoomBinding
 import com.example.seriesandpelisjoseph.domain.Capitulo
 import com.example.seriesandpelisjoseph.domain.Serie
-import com.example.seriesandpelisjoseph.domain.Temporada
+
 import com.example.seriesandpelisjoseph.framework.main.MainActivity
 import com.example.seriesandpelisjoseph.framework.main.adapter.CapsAdapterRoom
 import com.example.seriesandpelisjoseph.utils.Constantes
@@ -34,7 +34,8 @@ class FragmentMostrarFavRoom : Fragment() {
     private val binding get() = _binding!!
     private lateinit var capsAdapter: CapsAdapterRoom
     private lateinit var actionMode: ActionMode
-    private lateinit var temporadaSeleccionada: Temporada
+    private lateinit var serieFinal: Serie
+
     private val viewModel: MostrarSeriesFavViewModel by viewModels()
 
     private val callBack by lazy {
@@ -44,6 +45,9 @@ class FragmentMostrarFavRoom : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        val args: FragmentMostrarFavRoomArgs by navArgs()
+        serieFinal = args.serie
+
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -52,12 +56,18 @@ class FragmentMostrarFavRoom : Fragment() {
         menu.findItem(R.id.pelis).isVisible = false
         menu.findItem(R.id.buscar).isVisible = false
         menu.findItem(R.id.favoritos).isVisible = false
+        if (serieFinal.visto == true) {
+            menu.findItem(R.id.vistoroom).setIcon(R.drawable.outline_visibility_off_24)
+        }
+
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
         _binding = FragmentMostrarFavRoomBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -75,8 +85,7 @@ class FragmentMostrarFavRoom : Fragment() {
         override fun onActionItemClicked(p0: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
                 R.id.visto -> {
-//                    viewModel.updateCapitulo()
-//                    temporadaSeleccionada.idApi?.let { viewModel.getCapitulo(it) }
+                    viewModel.handleEvent(MostrarSeriesFavContract.Event.updateCapitulos)
                     Snackbar.make(binding.root, Constantes.VISTO, Snackbar.LENGTH_LONG)
                     return true
                 }
@@ -95,6 +104,7 @@ class FragmentMostrarFavRoom : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args: FragmentMostrarFavRoomArgs by navArgs()
+
         capsAdapter = CapsAdapterRoom(object : CapsAdapterRoom.CapsActions {
             override fun onStarSelectMode() {
                 (requireActivity() as MainActivity).startSupportActionMode(callBack)?.let {
@@ -111,72 +121,86 @@ class FragmentMostrarFavRoom : Fragment() {
             override fun isItemSelected(capitulo: Capitulo): Boolean =
                 viewModel.isSelected(capitulo)
 
+            override fun updateCapitulo(capitulo: Capitulo) {
+                viewModel.handleEvent(MostrarSeriesFavContract.Event.updateCapitulo(capitulo))
+            }
+
         })
+
+
 
         binding.rvCaps.adapter = capsAdapter
         var entrar = true
-        viewModel.handleEvent(MostrarSeriesFavContract.Event.getSerie(args.idSerie))
+        viewModel.handleEvent(MostrarSeriesFavContract.Event.getSerie(args.serie.id))
         lifecycleScope.launch {
 
-            repeatOnLifecycle(Lifecycle.State.STARTED){
-               viewModel.uiState.collect {
-                   it.serie?.let {serie ->
-                       if (entrar){
-                           with(binding) {
-                               imageView.loadAny(serie.imagen?.let { getString(R.string.pathImage) + it }
-                                   ?: run { this.root.context.getDrawable(R.drawable.img) })
-                               tvTitulo.text = serie.tituloSerie
-                               tvDescripcion.text = serie.descripcion
-                               tvFecha.text = serie.fecha
-                               serie.temporadas?.map { temporada -> temporada.idSerie = serie.id }
-                               val adapter = serie.temporadas?.let {
-                                   ArrayAdapter(
-                                       this.root.context, android.R.layout.simple_spinner_item,
-                                       it.toList()
-                                   )
-                               }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect {
+                    it.serie?.let { serie ->
+                        if (entrar) {
+                            with(binding) {
+                                imageView.loadAny(serie.imagen?.let { getString(R.string.pathImage) + it }
+                                    ?: run { this.root.context.getDrawable(R.drawable.img) })
+                                tvTitulo.text = serie.tituloSerie
+                                tvDescripcion.text = serie.descripcion
+                                tvFecha.text = serie.fecha
+                                serie.temporadas?.map { temporada -> temporada.idSerie = serie.id }
+                                val adapter = serie.temporadas?.let {
+                                    ArrayAdapter(
+                                        this.root.context, android.R.layout.simple_spinner_item,
+                                        it.toList()
+                                    )
+                                }
 
-                               binding.seasonSpinner.adapter = adapter
+                                binding.seasonSpinner.adapter = adapter
 
-                               binding.seasonSpinner.onItemSelectedListener =
-                                   object : AdapterView.OnItemSelectedListener,
-                                       AdapterView.OnItemClickListener {
-                                       override fun onItemSelected(
-                                           p0: AdapterView<*>?,
-                                           p1: View?,
-                                           p2: Int,
-                                           p3: Long
-                                       ) {
-                                           serie.temporadas?.get(p2)?.let { temporada ->
-                                               temporadaSeleccionada = temporada
-                                               viewModel.handleEvent(MostrarSeriesFavContract.Event.getCapitulo(temporada.idApi))
-                                           }
-                                       }
+                                binding.seasonSpinner.onItemSelectedListener =
+                                    object : AdapterView.OnItemSelectedListener,
+                                        AdapterView.OnItemClickListener {
+                                        override fun onItemSelected(
+                                            p0: AdapterView<*>?,
+                                            p1: View?,
+                                            p2: Int,
+                                            p3: Long
+                                        ) {
+                                            serie.temporadas?.get(p2)?.let { temporada ->
+                                                viewModel.handleEvent(
+                                                    MostrarSeriesFavContract.Event.getCapitulos(
+                                                        temporada.idApi
+                                                    )
+                                                )
+                                            }
+                                        }
 
-                                       override fun onNothingSelected(p0: AdapterView<*>?) {
+                                        override fun onNothingSelected(p0: AdapterView<*>?) {
 
-                                       }
+                                        }
 
-                                       override fun onItemClick(
-                                           p0: AdapterView<*>?,
-                                           p1: View?,
-                                           p2: Int,
-                                           p3: Long
-                                       ) {
+                                        override fun onItemClick(
+                                            p0: AdapterView<*>?,
+                                            p1: View?,
+                                            p2: Int,
+                                            p3: Long
+                                        ) {
 
-                                       }
+                                        }
 
-                                   }
-                           }
-                           entrar = false
-                       }
+                                    }
+                            }
+                            serieFinal = serie
 
-                   }
-               }
-                   }
+                            entrar = false
+                        }
+
+                    }
+                }
+            }
 
 
         }
+
+
+
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -195,23 +219,24 @@ class FragmentMostrarFavRoom : Fragment() {
         }
     }
 
-//    private fun addCaps(serie: Serie?) {
-//        serie?.temporadas?.forEach { temporada ->
-//            viewModel.getCapitulo(
-//                temporada.idApi
-//            )
-//        }
-//        viewModel.capituloData.observe(this, {
-//            serie?.temporadas?.map { temporada ->
-//                if (it != null) {
-//                    temporada.capitulos = it
-//                    temporada.capitulos?.map { it.idTemporada = temporada.id }
-//                }
-//            }
-//        })
-//
-//
-//    }
+    override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.vistoroom -> {
+                if (serieFinal.visto == true) {
+                    serieFinal.visto = false
+                    menuItem.setIcon(R.drawable.ic_baseline_remove_red_eye_24)
+                } else {
+                    serieFinal.visto = true
+                    menuItem.setIcon(R.drawable.outline_visibility_off_24)
+                }
+                viewModel.handleEvent(MostrarSeriesFavContract.Event.updateSerie(serieFinal))
+
+                true
+            }
+            else -> false
+        }
+        return super.onOptionsItemSelected(menuItem)
+    }
 
 
 }

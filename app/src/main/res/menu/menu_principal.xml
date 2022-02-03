@@ -19,7 +19,14 @@
         android:id="@+id/favoritos"
         android:title="@string/favoritos"
         android:icon="@drawable/ic_baseline_favorite_24"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/vistoroom"
+        android:title="@string/visto"
+        android:icon="@drawable/ic_baseline_remove_red_eye_24"
+        app:showAsAction="always"
         />
 
     <item

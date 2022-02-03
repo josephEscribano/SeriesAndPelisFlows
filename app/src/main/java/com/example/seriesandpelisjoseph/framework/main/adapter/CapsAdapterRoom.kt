@@ -19,6 +19,7 @@ class CapsAdapterRoom(val actions: CapsActions) :
         fun onStarSelectMode()
         fun itemHasClicked(capitulo: Capitulo)
         fun isItemSelected(capitulo: Capitulo): Boolean
+        fun updateCapitulo(capitulo: Capitulo)
     }
 
     fun resetSelectMode() {
@@ -73,8 +74,29 @@ class CapsAdapterRoom(val actions: CapsActions) :
                 }
             }
             binding.tvCap.text = capitulo.nombre
+            binding.buttonNoVisto.setOnClickListener {
+                capitulo.visto = true
+                actions.updateCapitulo(capitulo)
+                binding.buttonNoVisto.visibility = View.GONE
+                binding.buttonVisto.visibility = View.VISIBLE
+            }
+
+            binding.buttonVisto.setOnClickListener {
+                capitulo.visto = false
+                actions.updateCapitulo(capitulo)
+                binding.buttonNoVisto.visibility = View.VISIBLE
+                binding.buttonVisto.visibility = View.GONE
+
+            }
+
             if (capitulo.visto) {
-                itemView.setBackgroundColor(Color.GREEN)
+                binding.buttonNoVisto.visibility = View.GONE
+                binding.buttonVisto.visibility = View.VISIBLE
+                binding.checkBox.visibility = View.GONE
+            } else {
+                binding.buttonNoVisto.visibility = View.VISIBLE
+                binding.buttonVisto.visibility = View.GONE
+
             }
             if (selectMode) {
                 binding.checkBox.visibility = View.VISIBLE

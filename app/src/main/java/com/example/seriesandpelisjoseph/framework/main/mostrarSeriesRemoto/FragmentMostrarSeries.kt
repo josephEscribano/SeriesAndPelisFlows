@@ -17,9 +17,7 @@ import com.example.seriesandpelisjoseph.R
 import com.example.seriesandpelisjoseph.databinding.FragmentMostrarSeriesBinding
 import com.example.seriesandpelisjoseph.domain.Serie
 import com.example.seriesandpelisjoseph.framework.main.adapter.CapsAdapter
-import com.example.seriesandpelisjoseph.framework.main.listarMostrarMoviesFav.ListarMostrarMoviesContract
 import com.example.seriesandpelisjoseph.utils.Constantes
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -44,6 +42,7 @@ class FragmentMostrarSeries : Fragment() {
         menu.findItem(R.id.series).isVisible = false
         menu.findItem(R.id.pelis).isVisible = false
         menu.findItem(R.id.buscar).isVisible = false
+        menu.findItem(R.id.vistoroom).isVisible = false
     }
 
     override fun onCreateView(
@@ -58,15 +57,17 @@ class FragmentMostrarSeries : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val args: FragmentMostrarSeriesArgs by navArgs()
+        var entrar = true
         capsAdapter = CapsAdapter()
         binding.rvCaps.adapter = capsAdapter
         idSerie = args.serieid
-        var entrar = true
+
+
         viewModel.handleEvent(MostrarSeriesRemotoContract.Event.getSerie(idSerie))
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { value ->
-                    if (entrar){
+                    if (entrar) {
                         value.serie?.let {
                             with(binding) {
                                 imageView.loadAny(it.imagen?.let { getString(R.string.pathImage) + it }
@@ -94,8 +95,12 @@ class FragmentMostrarSeries : Fragment() {
                                             p3: Long
                                         ) {
                                             it.temporadas?.get(p2)?.let { temporada ->
-                                                viewModel.handleEvent(MostrarSeriesRemotoContract.Event.getCapitulos(it.idApi,
-                                                    temporada.seasonNumber))
+                                                viewModel.handleEvent(
+                                                    MostrarSeriesRemotoContract.Event.getCapitulos(
+                                                        it.idApi,
+                                                        temporada.seasonNumber
+                                                    )
+                                                )
 
                                             }
                                         }
@@ -129,6 +134,8 @@ class FragmentMostrarSeries : Fragment() {
         }
 
 
+
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { value ->
@@ -148,24 +155,27 @@ class FragmentMostrarSeries : Fragment() {
     }
 
 
-
     override fun onOptionsItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.favoritos -> {
                 viewModel.handleEvent(MostrarSeriesRemotoContract.Event.repetidoSerie(serieFinal.idApi))
                 lifecycleScope.launch {
                     var entrar = true
-                    repeatOnLifecycle(Lifecycle.State.STARTED){
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
                         viewModel.uiState.collect {
                             if (it.repetido == 0 && entrar) {
-                                viewModel.handleEvent(MostrarSeriesRemotoContract.Event.insertSerie(idSerie))
+                                viewModel.handleEvent(
+                                    MostrarSeriesRemotoContract.Event.insertSerie(
+                                        idSerie
+                                    )
+                                )
                                 Toast.makeText(
                                     context,
                                     Constantes.SERIE_AÑADIDA,
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 entrar = false
-                            } else if (it.repetido > 0 && entrar){
+                            } else if (it.repetido > 0 && entrar) {
 
                                 Toast.makeText(
                                     context,
